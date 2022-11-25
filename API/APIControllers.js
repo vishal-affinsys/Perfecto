@@ -1,6 +1,8 @@
 export const Endpoints = {
   paginatedData: page =>
     `https://api.pexels.com/v1/curated?page=${page}&per_page=40`,
+  search: query =>
+    `https://api.pexels.com/v1/search?query=${query}&per_page=40`,
 };
 
 class APIController {

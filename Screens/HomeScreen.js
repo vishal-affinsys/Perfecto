@@ -59,11 +59,17 @@ const HomeScreen = () => {
             <View style={style.imageButton}>
               <Pressable
                 onPress={() => {
-                  let images = [];
+                  let original = [];
+                  let large2x = [];
                   for (let i = 0; i < image.length; i++) {
-                    images.push({url: image[i].src.large2x});
+                    original.push({url: image[i].src.original});
+                    large2x.push({url: image[i].src.large2x});
                   }
-                  let params = {image: images, index: index};
+                  let params = {
+                    original: original,
+                    large2x: large2x,
+                    index: index,
+                  };
                   navigation.navigate('wallpaperView', params);
                 }}>
                 <Image
