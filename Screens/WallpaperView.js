@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, Text, Pressable} from 'react-native';
+import React, {useState, useRef} from 'react';
+import {View, StyleSheet, ToastAndroid, Pressable, Image} from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import fontStyle from '../helpers/Font';
 import Theme from '../helpers/Theme';
@@ -7,11 +7,14 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {PermissionsAndroid} from 'react-native';
 import APIController from '../API/APIControllers';
 import SetWallpaperModule from '../helpers/SetWallpaper';
+import {Picker} from '@react-native-picker/picker';
+import Icon from '../helpers/Icons';
 
 const WallpaperView = ({route}) => {
   const large2x = route.params.large2x;
   const original = route.params.original;
   const [index, setIndex] = useState(route.params.index);
+  const [selectedValue, setSelectedValue] = useState(null);
 
   async function downloadImage() {
     try {
@@ -61,32 +64,54 @@ const WallpaperView = ({route}) => {
       });
   }
 
+  async function threeDotsFunctions(itemValue, itemIndex) {
+    setSelectedValue(itemValue);
+    if (itemValue === 'download') {
+      await downloadImage();
+      ToastAndroid.showWithGravityAndOffset(
+        'Downloading Image',
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50,
+      );
+    } else if (itemValue === 'set') {
+      await SetWallpaperModule.setWallpaper(original[index].url, (res, msg) => {
+        console.log(res, msg);
+      });
+    } else if (itemValue === 'preview') {
+      console.log(itemIndex, itemValue);
+    }
+  }
+
+  const pickerRef = useRef();
+
   return (
     <View style={{...Theme.body, ...style.body}}>
       <View style={style.optionsContainer}>
-        <Pressable
-          android_ripple={{color: 'white'}}
-          onPress={async () => {
-            await downloadImage();
-          }}>
-          <Text style={{...fontStyle.h5, ...style.downloadButton}}>
-            Download
-          </Text>
-        </Pressable>
-        <Pressable
-          android_ripple={{color: 'white'}}
-          onPress={async () => {
-            await SetWallpaperModule.setWallpaper(
-              original[index].url,
-              (res, msg) => {
-                console.log(res, msg);
-              },
-            );
-          }}>
-          <Text style={{...fontStyle.h5, ...style.downloadButton}}>
-            Set as Wallpaper
-          </Text>
-        </Pressable>
+        <View style={style.buttonContainer}>
+          <Pressable
+            style={style.pressableStyle}
+            onPress={() => {
+              pickerRef.current.focus();
+            }}
+            android_ripple={{color: 'white'}}>
+            <Image style={style.threeDots} source={Icon.threeDots} />
+            <Picker
+              ref={pickerRef}
+              selectedValue={selectedValue}
+              style={style.picker}
+              onValueChange={async (itemValue, itemIndex) => {
+                await threeDotsFunctions(itemValue, itemIndex);
+              }}
+              mode="dropdown">
+              <Picker.Item label="Options" style={style.options} />
+              <Picker.Item label="Download" value={'download'} />
+              <Picker.Item label="Set as wallaper" value="set" />
+              <Picker.Item label="Preview wallpaper" value="preview" />
+            </Picker>
+          </Pressable>
+        </View>
       </View>
       <ImageViewer
         saveToLocalByLongPress={true}
@@ -118,6 +143,37 @@ const style = StyleSheet.create({
   },
   optionsContainer: {
     width: '100%',
+    alignItems: 'flex-end',
+    marginBottom: 30,
+    marginTop: 10,
+  },
+  threeDots: {
+    height: 40,
+    width: 40,
+  },
+  buttonContainer: {
+    backgroundColor: 'rgba(40,40,40,1)',
+    overflow: 'hidden',
+    borderRadius: 40,
+  },
+  pressableStyle: {
+    padding: 8,
+  },
+  picker: {
+    color: 'white',
+    height: 40,
+    flex: 1,
+    backgroundColor: 'white',
+    width: 40,
+    padding: 8,
+    marginRight: 12,
+    display: 'none',
+  },
+  options: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'rgba(240,240,240,1)',
+    backgroundColor: 'rgba(40,40,40,1)',
   },
 });
 

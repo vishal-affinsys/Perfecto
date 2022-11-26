@@ -1,8 +1,8 @@
 export const Endpoints = {
   paginatedData: page =>
     `https://api.pexels.com/v1/curated?page=${page}&per_page=40`,
-  search: query =>
-    `https://api.pexels.com/v1/search?query=${query}&per_page=40`,
+  search: (page, query) =>
+    `https://api.pexels.com/v1/search/?page=${page}&per_page=40&query=${query}`,
 };
 
 class APIController {
@@ -17,7 +17,7 @@ class APIController {
     try {
       var data = await fetch(url, this.options);
       let response = await data.json();
-      // this.logger(response);
+      this.logger(response);
       return response;
     } catch (err) {
       console.log(err);

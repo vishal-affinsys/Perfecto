@@ -3,6 +3,7 @@ import HomeScreen from './Screens/HomeScreen';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WallpaperView from './Screens/WallpaperView';
+import SearchScreen from './Screens/SearchScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,11 @@ const App = () => {
         <Stack.Screen
           name="wallpaperView"
           component={WallpaperView}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="searchScreen"
+          component={SearchScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
