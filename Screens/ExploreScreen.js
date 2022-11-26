@@ -1,13 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Image,
-  useWindowDimensions,
-  Pressable,
-} from 'react-native';
+import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import APIController, {Endpoints} from '../API/APIControllers';
 import fontStyle from '../helpers/Font';
 import Theme from '../helpers/Theme';
@@ -19,8 +11,6 @@ const ExploreScreen = () => {
   const [videos, setVideos] = useState([]);
   const [page, setPage] = useState(1);
   const navigation = useNavigation();
-
-  const size = useWindowDimensions();
 
   useEffect(() => {
     async function getData() {

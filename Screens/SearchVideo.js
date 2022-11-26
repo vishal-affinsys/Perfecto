@@ -1,19 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {
-  TextInput,
-  View,
-  StyleSheet,
-  FlatList,
-  Image,
-  Pressable,
-  Text,
-} from 'react-native';
+import {TextInput, View, StyleSheet} from 'react-native';
 import APIController, {Endpoints} from '../API/APIControllers';
-import {useNavigation} from '@react-navigation/native';
-import fontStyle from '../helpers/Font';
 import Theme from '../helpers/Theme';
-import Icon from '../helpers/Icons';
-import CustomList from '../components/CustomList';
 import VideoList from '../components/VideoList';
 
 const SearchVideo = () => {

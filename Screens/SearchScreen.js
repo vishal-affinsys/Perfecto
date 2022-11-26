@@ -1,18 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {
-  TextInput,
-  View,
-  StyleSheet,
-  FlatList,
-  Image,
-  Pressable,
-  Text,
-} from 'react-native';
+import {TextInput, View, StyleSheet} from 'react-native';
 import APIController, {Endpoints} from '../API/APIControllers';
-import {useNavigation} from '@react-navigation/native';
-import fontStyle from '../helpers/Font';
 import Theme from '../helpers/Theme';
-import Icon from '../helpers/Icons';
 import CustomList from '../components/CustomList';
 
 const SearchScreen = () => {
@@ -20,8 +9,6 @@ const SearchScreen = () => {
   const [onChangeText, setOnChangeText] = useState(null);
   const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
-
-  const navigation = useNavigation();
 
   useEffect(() => {
     async function getData() {

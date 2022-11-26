@@ -20,6 +20,7 @@ const VideoScreen = ({route}) => {
   const video = route.params.video;
   console.log(video);
   const pickerRef = useRef();
+  // eslint-disable-next-line no-unused-vars
   const [selectedValue, setSelectedValue] = useState();
   const [selectedSize, setSelectedSize] = useState(0);
   const [orientation, setOrientation] = useState('Portrait');
