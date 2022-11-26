@@ -3,6 +3,11 @@ export const Endpoints = {
     `https://api.pexels.com/v1/curated?page=${page}&per_page=40`,
   search: (page, query) =>
     `https://api.pexels.com/v1/search/?page=${page}&per_page=40&query=${query}`,
+  popularVideo: page =>
+    `https://api.pexels.com/v1/videos/popular/?page=${page}&per_page=40`,
+  mockAPI: 'https://mocki.io/v1/5b4c29e0-775d-4a94-b5bb-dd98fc617961',
+  searchVideo: (page, query) =>
+    `https://api.pexels.com/videos/search?query=${query}&per_page=40&page=${page}`,
 };
 
 class APIController {

@@ -14,28 +14,28 @@ import fontStyle from '../helpers/Font';
 import Theme from '../helpers/Theme';
 import Icon from '../helpers/Icons';
 import CustomList from '../components/CustomList';
+import VideoList from '../components/VideoList';
 
-const SearchScreen = () => {
+const SearchVideo = () => {
   const [searchText, setSearchText] = useState(null);
   const [onChangeText, setOnChangeText] = useState(null);
-  const [images, setImages] = useState([]);
+  const [video, setVideo] = useState([]);
   const [page, setPage] = useState(1);
-
-  const navigation = useNavigation();
 
   useEffect(() => {
     async function getData() {
       let data = await APIController.getData(
-        Endpoints.search(page, searchText),
+        Endpoints.searchVideo(page, searchText),
       );
-      setImages(previous => [...previous, ...data.photos]);
+      setVideo(previous => [...previous, ...data.videos]);
       //   APIController.logger(data);
     }
     if (searchText !== null) {
       getData();
     } else {
-      setImages(previous => []);
+      setVideo(previous => []);
     }
+    // APIController.logger(page + searchText);
   }, [searchText, page]);
 
   return (
@@ -59,7 +59,11 @@ const SearchScreen = () => {
           setSearchText(onChangeText);
         }}
       />
-      <CustomList images={images} setPage={setPage} />
+      {video.length === 0 ? (
+        <View />
+      ) : (
+        <VideoList videos={video} setPage={setPage} />
+      )}
     </View>
   );
 };
@@ -122,4 +126,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default SearchScreen;
+export default SearchVideo;

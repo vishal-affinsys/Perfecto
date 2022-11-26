@@ -1,24 +1,39 @@
-import React, {useState, useRef} from 'react';
-import {View, StyleSheet, ToastAndroid, Pressable, Image} from 'react-native';
-import ImageViewer from 'react-native-image-zoom-viewer';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  BackHandler,
+  ToastAndroid,
+  Pressable,
+  Image,
+  PermissionsAndroid,
+} from 'react-native';
+import Video from 'react-native-video';
 import Theme from '../helpers/Theme';
-import RNFetchBlob from 'rn-fetch-blob';
-import {PermissionsAndroid} from 'react-native';
-import APIController from '../API/APIControllers';
-import SetWallpaperModule from '../helpers/SetWallpaper';
+import Orientation from 'react-native-orientation-locker';
 import {Picker} from '@react-native-picker/picker';
 import Icon from '../helpers/Icons';
-import {useNavigation} from '@react-navigation/native';
+import RNFetchBlob from 'rn-fetch-blob';
+import APIController from '../API/APIControllers';
 
-const WallpaperView = ({route}) => {
-  const large2x = route.params.large2x;
-  const original = route.params.original;
-  const [index, setIndex] = useState(route.params.index);
-  // eslint-disable-next-line no-unused-vars
-  const [selectedValue, setSelectedValue] = useState(null);
-  const navigation = useNavigation();
+const VideoScreen = ({route}) => {
+  const video = route.params.video;
+  console.log(video);
+  const pickerRef = useRef();
+  const [selectedValue, setSelectedValue] = useState();
+  const [selectedSize, setSelectedSize] = useState(0);
+  const [orientation, setOrientation] = useState('Portrait');
 
-  async function downloadImage() {
+  const mode = ['stretch', 'contain', 'cover', 'none'];
+
+  useEffect(() => {
+    Orientation.lockToLandscape();
+  }, []);
+  BackHandler.addEventListener('hardwareBackPress', () => {
+    Orientation.lockToPortrait();
+  });
+
+  async function downloadVideo() {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -34,7 +49,7 @@ const WallpaperView = ({route}) => {
     } catch (err) {
       console.warn(err);
     }
-    console.log(original[index].url);
+    console.log(video);
     const {config, fs} = RNFetchBlob;
     let PictureDir = fs.dirs.PictureDir;
 
@@ -50,48 +65,69 @@ const WallpaperView = ({route}) => {
           PictureDir +
           '/perfecto_' +
           Math.floor(new Date().getTime() + new Date().getSeconds() / 2) +
-          '.jpeg',
-        description: 'Image',
+          '.mp4',
+        description: 'Video',
       },
     };
 
     APIController.logger(options);
-    console.log(index);
 
     config(options)
-      .fetch('GET', original[index].url)
+      .fetch('GET', video)
       .then(res => {
         //Showing alert after successful downloading
         console.log('res -> ', JSON.stringify(res));
       });
   }
 
-  async function threeDotsFunctions(itemValue, itemIndex) {
-    // setSelectedValue(itemValue);
-    if (itemValue === 'download') {
-      await downloadImage();
+  async function threeDotsFunctions(func) {
+    if (func === 'download') {
+      await downloadVideo();
       ToastAndroid.showWithGravityAndOffset(
         'Downloading Image',
-        ToastAndroid.LONG,
+        0.2,
         ToastAndroid.BOTTOM,
         25,
         50,
       );
-    } else if (itemValue === 'set') {
-      await SetWallpaperModule.setWallpaper(original[index].url, (res, msg) => {
-        console.log(res, msg);
-      });
-    } else if (itemValue === 'preview') {
-      console.log(itemIndex, itemValue, original[index].url);
-
-      navigation.navigate('previewScreen', {src: large2x[index].url});
+    } else if (func === 'resize') {
+      setSelectedSize(previous => (previous + 1) % 4);
+      console.log(selectedSize);
+      ToastAndroid.showWithGravityAndOffset(
+        mode[selectedSize],
+        0.2,
+        ToastAndroid.BOTTOM,
+        25,
+        50,
+      );
+    } else if (func === 'Portrait') {
+      Orientation.lockToPortrait();
+      setOrientation('Landscape');
+    } else if (func === 'Landscape') {
+      Orientation.lockToLandscape();
+      setOrientation('Portrait');
     }
   }
 
-  const pickerRef = useRef();
-
   return (
-    <View style={{...Theme.body, ...style.body}}>
+    <View style={Theme.body}>
+      <Video
+        controls={true}
+        style={style.videoStyle}
+        source={{uri: video}}
+        fullscreen={true}
+        hideShutterView={true}
+        isTVSelectable={true}
+        muted={false}
+        resizeMode={mode[selectedSize]}
+        volume={10}
+        onLoad={data => {
+          console.log(data);
+        }}
+        onBuffer={data => {
+          console.log(data);
+        }}
+      />
       <View style={style.optionsContainer}>
         <View style={style.buttonContainer}>
           <Pressable
@@ -111,39 +147,36 @@ const WallpaperView = ({route}) => {
               mode="dropdown">
               <Picker.Item label="Options" style={style.options} />
               <Picker.Item label="Download" value={'download'} />
-              <Picker.Item label="Set as wallaper" value="set" />
-              <Picker.Item label="Preview wallpaper" value="preview" />
+              <Picker.Item label="Resize" value="resize" />
+              <Picker.Item label={orientation} value={orientation} />
             </Picker>
           </Pressable>
         </View>
       </View>
-      <ImageViewer
-        saveToLocalByLongPress={true}
-        style={style.imageStyle}
-        backgroundColor={'rgba(25,25,25,1)'}
-        imageUrls={large2x}
-        index={index}
-        pageAnimateTime={100}
-        onChange={i => {
-          setIndex(i);
-        }}
-        enablePreload={true}
-      />
     </View>
   );
 };
 
 const style = StyleSheet.create({
-  body: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageStyle: {
-    height: 350,
+  videoStyle: {
+    flex: 1,
+    position: 'absolute',
+    height: '100%',
     width: '100%',
   },
-  downloadButton: {
-    textAlign: 'right',
+  text: {
+    height: 100,
+    width: 100,
+    backgroundColor: 'green',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  threeDots: {
+    height: 20,
+    width: 20,
+  },
+  pressableStyle: {
+    padding: 8,
   },
   optionsContainer: {
     width: '100%',
@@ -151,17 +184,9 @@ const style = StyleSheet.create({
     marginBottom: 30,
     marginTop: 10,
   },
-  threeDots: {
-    height: 40,
-    width: 40,
-  },
   buttonContainer: {
-    backgroundColor: 'rgba(40,40,40,1)',
     overflow: 'hidden',
     borderRadius: 40,
-  },
-  pressableStyle: {
-    padding: 8,
   },
   picker: {
     color: 'white',
@@ -173,12 +198,6 @@ const style = StyleSheet.create({
     marginRight: 12,
     display: 'none',
   },
-  options: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: 'rgba(240,240,240,1)',
-    backgroundColor: 'rgba(40,40,40,1)',
-  },
 });
 
-export default WallpaperView;
+export default VideoScreen;
