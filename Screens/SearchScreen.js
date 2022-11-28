@@ -32,6 +32,7 @@ const SearchScreen = () => {
         style={style.inputStyle}
         defaultValue={''}
         maxLength={30}
+        returnKeyType="search"
         placeholderTextColor={'white'}
         onChangeText={value => {
           //   console.log(value);

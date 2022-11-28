@@ -29,6 +29,18 @@ class APIController {
     }
   }
 
+  static async getDataUsingPromise(url) {
+    return new Promise((resolve, reject) => {
+      this.getData(url)
+        .then(response => {
+          resolve(response);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
   static logger(message) {
     console.log('***************************************************');
     console.log(message);

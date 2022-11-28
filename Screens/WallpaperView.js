@@ -9,6 +9,7 @@ import SetWallpaperModule from '../helpers/SetWallpaper';
 import {Picker} from '@react-native-picker/picker';
 import Icon from '../helpers/Icons';
 import {useNavigation} from '@react-navigation/native';
+import LocalStorage, {Operations} from '../API/LocalStorage';
 
 const WallpaperView = ({route}) => {
   const large2x = route.params.large2x;
@@ -85,6 +86,14 @@ const WallpaperView = ({route}) => {
       console.log(itemIndex, itemValue, original[index].url);
 
       navigation.navigate('previewScreen', {src: large2x[index].url});
+    } else if (itemValue === 'favorite') {
+      await LocalStorage.updateData(Operations.photo, {
+        src: {
+          large2x: large2x[index].url,
+          original: original[index].url,
+          id: original[index].id,
+        },
+      });
     }
   }
 
@@ -113,6 +122,7 @@ const WallpaperView = ({route}) => {
               <Picker.Item label="Download" value={'download'} />
               <Picker.Item label="Set as wallaper" value="set" />
               <Picker.Item label="Preview wallpaper" value="preview" />
+              <Picker.Item label="Add to favorite" value="favorite" />
             </Picker>
           </Pressable>
         </View>

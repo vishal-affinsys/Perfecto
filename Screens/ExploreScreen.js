@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, Pressable} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import APIController, {Endpoints} from '../API/APIControllers';
 import fontStyle from '../helpers/Font';
 import Theme from '../helpers/Theme';
 import {useNavigation} from '@react-navigation/native';
 import Icon from '../helpers/Icons';
 import VideoList from '../components/VideoList';
+import IconButton from '../components/IconButton';
 
 const ExploreScreen = () => {
   const [videos, setVideos] = useState([]);
@@ -25,18 +26,19 @@ const ExploreScreen = () => {
       <View style={style.header}>
         <View>
           <Text style={{...fontStyle.h1, ...Theme.headingStyle}}>Popular</Text>
-          <Text style={{...fontStyle.h1, ...Theme.headingStyle}}>videos</Text>
+          <Text
+            style={{...fontStyle.h1, ...Theme.headingStyle, ...style.videos}}>
+            Videos
+          </Text>
         </View>
-        <View style={style.searchContainer}>
-          <Pressable
-            onPress={() => {
-              navigation.navigate('searchVideo');
-            }}
-            style={style.searchPressable}
-            android_ripple={{color: 'white'}}>
-            <Image style={style.searchIcon} source={Icon.search} />
-          </Pressable>
-        </View>
+        <IconButton
+          icon={Icon.search}
+          onPress={() => {
+            navigation.navigate('searchVideo');
+          }}
+          styleContainer={style.searchContainer}
+          styleImage={style.searchIcon}
+        />
       </View>
       <VideoList videos={videos} setPage={setPage} />
     </View>
@@ -54,6 +56,10 @@ const style = StyleSheet.create({
     borderRadius: 40,
     overflow: 'hidden',
     marginRight: 20,
+  },
+  videos: {
+    color: 'rgba(190,120,55,1)',
+    marginBottom: 5,
   },
   searchPressable: {
     padding: 8,

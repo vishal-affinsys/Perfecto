@@ -3,11 +3,12 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import fontStyle from '../helpers/Font';
 
-const CustomList = ({images, setPage}) => {
+const CustomList = ({images, setPage, horizontal}) => {
   const navigation = useNavigation();
 
   return (
     <FlatList
+      horizontal={horizontal}
       data={images}
       keyExtractor={(item, index) => {
         return index;
@@ -38,8 +39,11 @@ const CustomList = ({images, setPage}) => {
                 let original = [];
                 let large2x = [];
                 for (let i = 0; i < images.length; i++) {
-                  original.push({url: images[i].src.original});
-                  large2x.push({url: images[i].src.large2x});
+                  original.push({
+                    url: images[i].src.original,
+                    id: images[i].id,
+                  });
+                  large2x.push({url: images[i].src.large2x, id: images[i].id});
                 }
                 let params = {
                   original: original,

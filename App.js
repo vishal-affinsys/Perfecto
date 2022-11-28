@@ -13,6 +13,8 @@ import BottomTabIcons from './components/BottomTabIcons';
 import Icon from './helpers/Icons';
 import VideoScreen from './Screens/VideoScreen';
 import SearchVideo from './Screens/SearchVideo';
+// import {Provider} from 'react-redux';
+// import store from './Store/Store';
 
 const Tab = createBottomTabNavigator();
 
@@ -106,5 +108,11 @@ const App = () => {
     </NavigationContainer>
   );
 };
+
+// const ReduxApp = () => (
+//   <Provider store={store}>
+//     <App />
+//   </Provider>
+// );
 
 export default App;
