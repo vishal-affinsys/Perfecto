@@ -1,29 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import {TextInput, View, StyleSheet} from 'react-native';
-import APIController, {Endpoints} from '../API/APIControllers';
 import Theme from '../helpers/Theme';
 import CustomList from '../components/CustomList';
+import {useDispatch, useSelector} from 'react-redux';
+import {clearSearch, getSearchImages} from '../Store/Images';
 
 const SearchScreen = () => {
   const [searchText, setSearchText] = useState(null);
   const [onChangeText, setOnChangeText] = useState(null);
-  const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
 
+  const dispatch = useDispatch();
+  const imageRdx = useSelector(state => state.image);
+
   useEffect(() => {
-    async function getData() {
-      let data = await APIController.getData(
-        Endpoints.search(page, searchText),
-      );
-      setImages(previous => [...previous, ...data.photos]);
-      //   APIController.logger(data);
+    if (searchText === null) {
+      dispatch(clearSearch());
+    } else if (searchText !== null) {
+      dispatch(getSearchImages({page: page, query: searchText}));
     }
-    if (searchText !== null) {
-      getData();
-    } else {
-      setImages(previous => []);
-    }
-  }, [searchText, page]);
+  }, [dispatch, searchText, page]);
 
   return (
     <View style={Theme.body}>
@@ -35,7 +31,6 @@ const SearchScreen = () => {
         returnKeyType="search"
         placeholderTextColor={'white'}
         onChangeText={value => {
-          //   console.log(value);
           setOnChangeText(value);
           if (value.length === 0) {
             setSearchText(null);
@@ -47,7 +42,7 @@ const SearchScreen = () => {
           setSearchText(onChangeText);
         }}
       />
-      <CustomList images={images} setPage={setPage} />
+      <CustomList images={imageRdx.searchedImages} setPage={setPage} />
     </View>
   );
 };

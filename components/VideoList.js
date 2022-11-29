@@ -6,20 +6,41 @@ import {
   Text,
   Image,
   StyleSheet,
+  ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import fontStyle from '../helpers/Font';
+import {useSelector} from 'react-redux';
 
 const VideoList = ({videos, setPage}) => {
   const {navigate} = useNavigation();
   const size = useWindowDimensions();
+
+  const videoRdx = useSelector(state => state.video);
 
   return (
     <FlatList
       data={videos}
       keyExtractor={(item, index) => index}
       numColumns={3}
+      ListEmptyComponent={() => {
+        if (videoRdx.loading) {
+          return (
+            <View style={style.activityContainer}>
+              <ActivityIndicator style={style.activityIndicator} />
+            </View>
+          );
+        } else if (videoRdx.status === 'failed') {
+          return (
+            <View style={style.activityContainer}>
+              <Text style={{...fontStyle.h5, ...style.error}}>
+                {videoRdx.error}
+              </Text>
+            </View>
+          );
+        }
+      }}
       ListFooterComponent={() => {
         return videos.length === 0 ? (
           <View />
@@ -44,6 +65,8 @@ const VideoList = ({videos, setPage}) => {
             onPress={() => {
               navigate('videoScreen', {
                 video: item.video_files[0].link,
+                id: item.id,
+                thumbnail: item.video_pictures[0].picture,
               });
             }}>
             <Image
@@ -58,6 +81,23 @@ const VideoList = ({videos, setPage}) => {
 };
 
 const style = StyleSheet.create({
+  error: {
+    color: 'rgba(240,160,150,1)',
+    textAlign: 'center',
+  },
+  listStyle: {
+    flex: 1,
+  },
+  activityIndicator: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activityContainer: {
+    flex: 1,
+    height: 600,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',

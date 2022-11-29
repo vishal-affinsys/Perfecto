@@ -1,25 +1,24 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import APIController, {Endpoints} from '../API/APIControllers';
 import fontStyle from '../helpers/Font';
 import Theme from '../helpers/Theme';
 import {useNavigation} from '@react-navigation/native';
 import Icon from '../helpers/Icons';
 import VideoList from '../components/VideoList';
 import IconButton from '../components/IconButton';
+import {useDispatch, useSelector} from 'react-redux';
+import {getVideos} from '../Store/Videos';
 
 const ExploreScreen = () => {
-  const [videos, setVideos] = useState([]);
   const [page, setPage] = useState(1);
   const navigation = useNavigation();
 
+  const dispatch = useDispatch();
+  const videoRdx = useSelector(state => state.video);
+
   useEffect(() => {
-    async function getData() {
-      let data = await APIController.getData(Endpoints.popularVideo(page));
-      setVideos(previous => [...previous, ...data.videos]);
-    }
-    getData();
-  }, [setVideos, page]);
+    dispatch(getVideos(page));
+  }, [dispatch, page]);
 
   return (
     <View style={Theme.body}>
@@ -40,7 +39,7 @@ const ExploreScreen = () => {
           styleImage={style.searchIcon}
         />
       </View>
-      <VideoList videos={videos} setPage={setPage} />
+      <VideoList videos={videoRdx.popularVideos} setPage={setPage} />
     </View>
   );
 };

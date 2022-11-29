@@ -8,6 +8,7 @@ export const Endpoints = {
   mockAPI: 'https://mocki.io/v1/5b4c29e0-775d-4a94-b5bb-dd98fc617961',
   searchVideo: (page, query) =>
     `https://api.pexels.com/videos/search?query=${query}&per_page=40&page=${page}`,
+  mockAPIimages: 'https://mocki.io/v1/ba33d6ed-8c3a-4c4b-b448-01610807d392',
 };
 
 class APIController {
@@ -19,14 +20,29 @@ class APIController {
   };
 
   static async getData(url) {
-    try {
-      var data = await fetch(url, this.options);
-      let response = await data.json();
-      this.logger(response);
-      return response;
-    } catch (err) {
-      console.log(err);
-    }
+    const promise = await new Promise((resolve, reject) =>
+      fetch(url, this.options)
+        .then(res =>
+          res.json().then(data => {
+            // console.log(data);
+            resolve(data);
+          }),
+        )
+        .catch(error => {
+          console.log(error);
+          reject(`Something went wrong\n ${error}`);
+        }),
+    );
+    // console.log(promise);
+    return promise;
+    // try {
+    //   var data = await fetch(url, this.options);
+    //   let response = await data.json();
+    //   this.logger(response);
+    //   return response;
+    // } catch (err) {
+    //   console.log(err);
+    // }
   }
 
   static async getDataUsingPromise(url) {

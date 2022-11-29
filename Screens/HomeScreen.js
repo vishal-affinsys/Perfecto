@@ -1,41 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, StatusBar} from 'react-native';
 import fontStyle from '../helpers/Font';
-import APIController, {Endpoints} from '../API/APIControllers';
 import {useNavigation} from '@react-navigation/native';
 import Theme from '../helpers/Theme';
 import Icon from '../helpers/Icons';
 import CustomList from '../components/CustomList';
 import IconButton from '../components/IconButton';
-// import {useSelector, useDispatch} from 'react-redux';
-import {fetchDataAction} from '../Store/UserActions';
+import {useSelector, useDispatch} from 'react-redux';
+import {getPaginatedImages} from '../Store/Images';
 
 const HomeScreen = () => {
-  const [image, setImages] = useState([]);
   const [page, setPage] = useState(1);
   const navigation = useNavigation();
 
-  // const user = useSelector(state => state.user);
-  // const {usersData, loading, error} = user;
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(fetchDataAction(Endpoints.paginatedData(page)))
-  //     .then(res => {
-  //       console.log(res);
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // });
+  const dispatch = useDispatch();
+  const images = useSelector(state => state.image);
 
   useEffect(() => {
-    async function getData() {
-      let data = await APIController.getData(Endpoints.paginatedData(page));
-      setImages(previous => [...previous, ...data.photos]);
-    }
-    getData();
-  }, [setImages, page]);
+    dispatch(getPaginatedImages(page));
+  }, [dispatch, page]);
 
   return (
     <View style={Theme.body}>
@@ -61,7 +44,7 @@ const HomeScreen = () => {
           icon={Icon.search}
         />
       </View>
-      <CustomList images={image} setPage={setPage} />
+      <CustomList images={images.images} setPage={setPage} />
     </View>
   );
 };

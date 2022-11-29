@@ -6,25 +6,24 @@ import {
   Image,
   FlatList,
   useWindowDimensions,
+  Pressable,
 } from 'react-native';
-import LocalStorage, {Operations} from '../API/LocalStorage';
 import fontStyle from '../helpers/Font';
 import Icon from '../helpers/Icons';
 import Theme from '../helpers/Theme';
-// import Divider from '../components/Divider';
+import {useDispatch, useSelector} from 'react-redux';
+import {getPhotosFromLocal, getVideosFromLocal} from '../Store/Storage';
+import {useNavigation} from '@react-navigation/native';
 
 const FavoriteScreen = () => {
   const width = useWindowDimensions().width;
-  const [photos, setPhotos] = useState([]);
-  const [video, setVideos] = useState([]);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const storage = useSelector(state => state.storage);
   useEffect(() => {
-    async function getData() {
-      let data = await LocalStorage.getDatafromLocal(Operations.photo);
-      setPhotos(data);
-      console.log(data);
-    }
-    getData();
-  }, [setPhotos]);
+    dispatch(getPhotosFromLocal());
+    dispatch(getVideosFromLocal());
+  }, [dispatch]);
 
   return (
     <View style={{...Theme.body}}>
@@ -37,7 +36,7 @@ const FavoriteScreen = () => {
       <FlatList
         style={style.listStyle}
         // pagingEnabled={true}
-        data={photos}
+        data={storage.photos}
         showsHorizontalScrollIndicator={false}
         horizontal={true}
         ListEmptyComponent={() => {
@@ -54,15 +53,35 @@ const FavoriteScreen = () => {
             </View>
           );
         }}
-        renderItem={({item}) => {
+        renderItem={({item, index}) => {
           return (
-            <View style={{...style.imageContainer}}>
-              <Image
-                resizeMode="contain"
-                source={{uri: item.src.large2x}}
-                style={{...style.imageStyle, width: width - 60}}
-              />
-            </View>
+            <Pressable
+              onPress={() => {
+                let original = [];
+                let large2x = [];
+                let images = storage.photos;
+                for (let i = 0; i < images.length; i++) {
+                  original.push({
+                    url: images[i].src.original,
+                    id: images[i].id,
+                  });
+                  large2x.push({url: images[i].src.large2x, id: images[i].id});
+                }
+                let params = {
+                  original: original,
+                  large2x: large2x,
+                  index: index,
+                };
+                navigation.navigate('wallpaperView', params);
+              }}>
+              <View style={{...style.imageContainer}}>
+                <Image
+                  // resizeMode="none"
+                  source={{uri: item.src.large2x}}
+                  style={{...style.imageStyle, width: width - 60}}
+                />
+              </View>
+            </Pressable>
           );
         }}
       />
@@ -73,7 +92,7 @@ const FavoriteScreen = () => {
       <FlatList
         style={style.listStyle}
         // pagingEnabled={true}
-        data={video}
+        data={storage.videos}
         showsHorizontalScrollIndicator={false}
         horizontal={true}
         ListEmptyComponent={() => {
@@ -92,13 +111,18 @@ const FavoriteScreen = () => {
         }}
         renderItem={({item}) => {
           return (
-            <View style={{...style.imageContainer}}>
-              <Image
-                resizeMode="contain"
-                source={{uri: item.src.large2x}}
-                style={{...style.imageStyle, width: width - 60}}
-              />
-            </View>
+            <Pressable
+              onPress={() => {
+                navigation.navigate('videoScreen', item);
+              }}>
+              <View style={{...style.imageContainer}}>
+                <Image
+                  // resizeMode="contain"
+                  source={{uri: item.thumbnail}}
+                  style={{...style.imageStyle, width: width - 60}}
+                />
+              </View>
+            </Pressable>
           );
         }}
       />

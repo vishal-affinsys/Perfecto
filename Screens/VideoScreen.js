@@ -15,6 +15,8 @@ import {Picker} from '@react-native-picker/picker';
 import Icon from '../helpers/Icons';
 import RNFetchBlob from 'rn-fetch-blob';
 import APIController from '../API/APIControllers';
+import {useDispatch, useSelector} from 'react-redux';
+import {removeVideoFromLocal, saveVideosToLocal} from '../Store/Storage';
 
 const VideoScreen = ({route}) => {
   const video = route.params.video;
@@ -24,6 +26,9 @@ const VideoScreen = ({route}) => {
   const [selectedValue, setSelectedValue] = useState();
   const [selectedSize, setSelectedSize] = useState(0);
   const [orientation, setOrientation] = useState('Portrait');
+
+  const dispatch = useDispatch();
+  const storage = useSelector(state => state.storage);
 
   const mode = ['stretch', 'contain', 'cover', 'none'];
 
@@ -107,7 +112,34 @@ const VideoScreen = ({route}) => {
     } else if (func === 'Landscape') {
       Orientation.lockToLandscape();
       setOrientation('Portrait');
+    } else if (func === 'favorite') {
+      dispatch(saveVideosToLocal(route.params));
+      ToastAndroid.showWithGravityAndOffset(
+        'Added to favorite',
+        0.2,
+        ToastAndroid.BOTTOM,
+        25,
+        50,
+      );
+    } else if (func === 'remove_favorite') {
+      ToastAndroid.showWithGravityAndOffset(
+        'Removed from favorite',
+        0.2,
+        ToastAndroid.BOTTOM,
+        25,
+        50,
+      );
+      dispatch(removeVideoFromLocal(route.params.id));
     }
+  }
+
+  function checkIfExist(itemId) {
+    for (let i = 0; i < storage.videos.length; i++) {
+      if (storage.videos[i].id === itemId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   return (
@@ -149,6 +181,16 @@ const VideoScreen = ({route}) => {
               <Picker.Item label="Options" style={style.options} />
               <Picker.Item label="Download" value={'download'} />
               <Picker.Item label="Resize" value="resize" />
+              <Picker.Item
+                label={
+                  checkIfExist(route.params.id)
+                    ? 'Remove from favorite'
+                    : 'Add to favorite'
+                }
+                value={
+                  checkIfExist(route.params.id) ? 'remove_favorite' : 'favorite'
+                }
+              />
               <Picker.Item label={orientation} value={orientation} />
             </Picker>
           </Pressable>

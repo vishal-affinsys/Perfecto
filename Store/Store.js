@@ -1,12 +1,12 @@
-// import {createStore, combineReducers, applyMiddleware} from 'react-redux';
-// import thunk from 'redux-thunk';
+import {configureStore, combineReducers} from '@reduxjs/toolkit';
+import imageReducer from './Images';
+import VideoReducer from './Videos';
+import storageReducer from './Storage';
 
-// import {APIReducers} from './Reducers';
+const reducer = combineReducers({
+  image: imageReducer,
+  video: VideoReducer,
+  storage: storageReducer,
+});
 
-// const rootReducer = combineReducers({
-//   user: APIReducers,
-// });
-
-// const store = createStore(rootReducer, applyMiddleware(thunk));
-
-// export default store;
+export const store = configureStore({reducer});

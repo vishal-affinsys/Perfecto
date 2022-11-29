@@ -17,7 +17,7 @@ class LocalStorage {
   static async getDatafromLocal(key) {
     try {
       const jsonValue = await AsyncStorage.getItem(key);
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
+      return jsonValue != null ? JSON.parse(jsonValue) : [];
     } catch (e) {
       console.log(e);
     }
@@ -32,6 +32,22 @@ class LocalStorage {
       data.push(item);
       const jsonValue = JSON.stringify(data);
       await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  static async removeData(key, itemId) {
+    try {
+      let data = await this.getDatafromLocal(key);
+      if (data === null) {
+        data = [];
+        return data;
+      }
+      data = data.filter(val => val.id !== itemId);
+      const jsonValue = JSON.stringify(data);
+      await AsyncStorage.setItem(key, jsonValue);
+      return data;
     } catch (e) {
       console.log(e);
     }

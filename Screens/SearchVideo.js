@@ -1,30 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import {TextInput, View, StyleSheet} from 'react-native';
-import APIController, {Endpoints} from '../API/APIControllers';
 import Theme from '../helpers/Theme';
 import VideoList from '../components/VideoList';
+import {useDispatch, useSelector} from 'react-redux';
+import {clearVideoSearch, getSearchedVideos} from '../Store/Videos';
 
 const SearchVideo = () => {
   const [searchText, setSearchText] = useState(null);
   const [onChangeText, setOnChangeText] = useState(null);
-  const [video, setVideo] = useState([]);
+  // const [video, setVideo] = useState([]);
   const [page, setPage] = useState(1);
 
+  const dispatch = useDispatch();
+  const videoRdx = useSelector(state => state.video);
+
   useEffect(() => {
-    async function getData() {
-      let data = await APIController.getData(
-        Endpoints.searchVideo(page, searchText),
-      );
-      setVideo(previous => [...previous, ...data.videos]);
-      //   APIController.logger(data);
-    }
     if (searchText !== null) {
-      getData();
-    } else {
-      setVideo(previous => []);
+      dispatch(getSearchedVideos({page: page, query: searchText}));
+    } else if (searchText === null) {
+      dispatch(clearVideoSearch());
     }
-    // APIController.logger(page + searchText);
-  }, [searchText, page]);
+  }, [dispatch, searchText, page]);
 
   return (
     <View style={Theme.body}>
@@ -48,11 +44,7 @@ const SearchVideo = () => {
           setSearchText(onChangeText);
         }}
       />
-      {video.length === 0 ? (
-        <View />
-      ) : (
-        <VideoList videos={video} setPage={setPage} />
-      )}
+      <VideoList videos={videoRdx.searchedVideos} setPage={setPage} />
     </View>
   );
 };

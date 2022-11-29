@@ -10,6 +10,8 @@ import {Picker} from '@react-native-picker/picker';
 import Icon from '../helpers/Icons';
 import {useNavigation} from '@react-navigation/native';
 import LocalStorage, {Operations} from '../API/LocalStorage';
+import {useDispatch, useSelector} from 'react-redux';
+import {removeImageFromLocal, saveImagesToLocal} from '../Store/Storage';
 
 const WallpaperView = ({route}) => {
   const large2x = route.params.large2x;
@@ -18,6 +20,9 @@ const WallpaperView = ({route}) => {
   // eslint-disable-next-line no-unused-vars
   const [selectedValue, setSelectedValue] = useState(null);
   const navigation = useNavigation();
+  const storage = useSelector(state => state.storage);
+
+  const dispatch = useDispatch();
 
   async function downloadImage() {
     try {
@@ -87,14 +92,26 @@ const WallpaperView = ({route}) => {
 
       navigation.navigate('previewScreen', {src: large2x[index].url});
     } else if (itemValue === 'favorite') {
-      await LocalStorage.updateData(Operations.photo, {
+      const data = {
+        id: original[index].id,
         src: {
           large2x: large2x[index].url,
           original: original[index].url,
-          id: original[index].id,
         },
-      });
+      };
+      dispatch(saveImagesToLocal(data));
+    } else if (itemValue === 'remove_favorite') {
+      dispatch(removeImageFromLocal(large2x[index].id));
     }
+  }
+
+  function checkIfExist(itemId) {
+    for (let i = 0; i < storage.photos.length; i++) {
+      if (storage.photos[i].id === itemId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   const pickerRef = useRef();
@@ -115,6 +132,7 @@ const WallpaperView = ({route}) => {
               selectedValue={selectedValue}
               style={style.picker}
               onValueChange={async (itemValue, itemIndex) => {
+                APIController.logger(itemValue);
                 await threeDotsFunctions(itemValue, itemIndex);
               }}
               mode="dropdown">
@@ -122,7 +140,18 @@ const WallpaperView = ({route}) => {
               <Picker.Item label="Download" value={'download'} />
               <Picker.Item label="Set as wallaper" value="set" />
               <Picker.Item label="Preview wallpaper" value="preview" />
-              <Picker.Item label="Add to favorite" value="favorite" />
+              <Picker.Item
+                label={
+                  checkIfExist(large2x[index].id)
+                    ? 'Remove from favorite'
+                    : 'Add to favorite'
+                }
+                value={
+                  checkIfExist(large2x[index].id)
+                    ? 'remove_favorite'
+                    : 'favorite'
+                }
+              />
             </Picker>
           </Pressable>
         </View>
