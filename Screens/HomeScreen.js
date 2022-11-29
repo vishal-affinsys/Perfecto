@@ -8,6 +8,7 @@ import CustomList from '../components/CustomList';
 import IconButton from '../components/IconButton';
 import {useSelector, useDispatch} from 'react-redux';
 import {getPaginatedImages} from '../Store/Images';
+import {getPhotoQuality, getVideoQuality} from '../Store/Settings';
 
 const HomeScreen = () => {
   const [page, setPage] = useState(1);
@@ -18,6 +19,8 @@ const HomeScreen = () => {
 
   useEffect(() => {
     dispatch(getPaginatedImages(page));
+    dispatch(getPhotoQuality());
+    dispatch(getVideoQuality());
   }, [dispatch, page]);
 
   return (

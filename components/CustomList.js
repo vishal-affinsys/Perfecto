@@ -66,17 +66,23 @@ const CustomList = ({images, setPage, horizontal}) => {
               onPress={() => {
                 let original = [];
                 let large2x = [];
+                let src = [];
                 for (let i = 0; i < images.length; i++) {
                   original.push({
                     url: images[i].src.original,
                     id: images[i].id,
                   });
                   large2x.push({url: images[i].src.large2x, id: images[i].id});
+                  src.push({
+                    src: images[i].src,
+                    id: images[i].id,
+                  });
                 }
                 let params = {
                   original: original,
                   large2x: large2x,
                   index: index,
+                  src: src,
                 };
                 navigation.navigate('wallpaperView', params);
               }}>

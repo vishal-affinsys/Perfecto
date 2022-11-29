@@ -9,18 +9,20 @@ import SetWallpaperModule from '../helpers/SetWallpaper';
 import {Picker} from '@react-native-picker/picker';
 import Icon from '../helpers/Icons';
 import {useNavigation} from '@react-navigation/native';
-import LocalStorage, {Operations} from '../API/LocalStorage';
 import {useDispatch, useSelector} from 'react-redux';
 import {removeImageFromLocal, saveImagesToLocal} from '../Store/Storage';
 
 const WallpaperView = ({route}) => {
   const large2x = route.params.large2x;
   const original = route.params.original;
+  const src = route.params.src;
   const [index, setIndex] = useState(route.params.index);
   // eslint-disable-next-line no-unused-vars
   const [selectedValue, setSelectedValue] = useState(null);
   const navigation = useNavigation();
   const storage = useSelector(state => state.storage);
+
+  const settings = useSelector(state => state.setting);
 
   const dispatch = useDispatch();
 
@@ -62,10 +64,12 @@ const WallpaperView = ({route}) => {
     };
 
     APIController.logger(options);
+    APIController.logger(settings.imageQuality.quality);
+    APIController.logger(src[index].src);
     console.log(index);
 
     config(options)
-      .fetch('GET', original[index].url)
+      .fetch('GET', src[index].src[settings.imageQuality.quality])
       .then(res => {
         //Showing alert after successful downloading
         console.log('res -> ', JSON.stringify(res));
@@ -94,6 +98,7 @@ const WallpaperView = ({route}) => {
     } else if (itemValue === 'favorite') {
       const data = {
         id: original[index].id,
+        srcArray: src[index],
         src: {
           large2x: large2x[index].url,
           original: original[index].url,

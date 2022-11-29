@@ -1,7 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import APIController from './APIControllers';
 export const Operations = {
   video: 'video',
   photo: 'photo',
+  photoQuality: 'photoQ',
+  videoQuality: 'videoQ',
 };
 
 class LocalStorage {
@@ -9,6 +12,7 @@ class LocalStorage {
     try {
       const jsonValue = JSON.stringify(data);
       await AsyncStorage.setItem(key, jsonValue);
+      APIController.logger({key, data});
     } catch (e) {
       console.log(e);
     }
@@ -17,7 +21,8 @@ class LocalStorage {
   static async getDatafromLocal(key) {
     try {
       const jsonValue = await AsyncStorage.getItem(key);
-      return jsonValue != null ? JSON.parse(jsonValue) : [];
+      let res = jsonValue != null ? JSON.parse(jsonValue) : [];
+      return res;
     } catch (e) {
       console.log(e);
     }
@@ -32,6 +37,7 @@ class LocalStorage {
       data.push(item);
       const jsonValue = JSON.stringify(data);
       await AsyncStorage.setItem(key, jsonValue);
+      APIController.logger(data);
     } catch (e) {
       console.log(e);
     }

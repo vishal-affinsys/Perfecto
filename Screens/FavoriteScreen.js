@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import Theme from '../helpers/Theme';
 import {useDispatch, useSelector} from 'react-redux';
 import {getPhotosFromLocal, getVideosFromLocal} from '../Store/Storage';
 import {useNavigation} from '@react-navigation/native';
+import APIController from '../API/APIControllers';
 
 const FavoriteScreen = () => {
   const width = useWindowDimensions().width;
@@ -59,6 +60,7 @@ const FavoriteScreen = () => {
               onPress={() => {
                 let original = [];
                 let large2x = [];
+                let src = [];
                 let images = storage.photos;
                 for (let i = 0; i < images.length; i++) {
                   original.push({
@@ -66,11 +68,14 @@ const FavoriteScreen = () => {
                     id: images[i].id,
                   });
                   large2x.push({url: images[i].src.large2x, id: images[i].id});
+                  src.push(images[i].srcArray);
+                  APIController.logger(src);
                 }
                 let params = {
                   original: original,
                   large2x: large2x,
                   index: index,
+                  src: src,
                 };
                 navigation.navigate('wallpaperView', params);
               }}>

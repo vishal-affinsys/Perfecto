@@ -9,6 +9,7 @@ const style = StyleSheet.create({
   divider: {
     borderBottomColor: 'rgba(200,200,200,1)',
     borderBottomWidth: StyleSheet.hairlineWidth,
+    marginVertical: 12,
   },
 });
 

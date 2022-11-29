@@ -29,6 +29,11 @@ const fontStyle = StyleSheet.create({
     fontWeight: '300',
     color: 'rgba(200,200,200,1)',
   },
+  bodyText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'rgba(200,200,200,1)',
+  },
 });
 
 export default fontStyle;

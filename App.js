@@ -35,7 +35,11 @@ const TabScreen = () => {
         component={HomeScreen}
         options={{
           tabBarIcon: ({focused}) => {
-            return <BottomTabIcons image={Icon.home} />;
+            return <BottomTabIcons image={Icon.wallpaper} />;
+          },
+          tabBarLabel: 'Wallpaper',
+          tabBarLabelStyle: {
+            color: 'rgba(100,83,190,1)',
           },
         }}
       />
@@ -44,7 +48,11 @@ const TabScreen = () => {
         component={ExploreScreen}
         options={{
           tabBarIcon: ({focused}) => {
-            return <BottomTabIcons image={Icon.explore} />;
+            return <BottomTabIcons image={Icon.video} />;
+          },
+          tabBarLabel: 'Video',
+          tabBarLabelStyle: {
+            color: 'rgba(190,120,55,1)',
           },
         }}
       />
@@ -53,7 +61,11 @@ const TabScreen = () => {
         component={FavoriteScreen}
         options={{
           tabBarIcon: ({focused}) => {
-            return <BottomTabIcons image={Icon.favorite} />;
+            return <BottomTabIcons image={Icon.favoriteColor} />;
+          },
+          tabBarLabel: 'Favorite',
+          tabBarLabelStyle: {
+            color: 'rgba(240,90,140,1)',
           },
         }}
       />
@@ -63,6 +75,10 @@ const TabScreen = () => {
         options={{
           tabBarIcon: ({focused}) => {
             return <BottomTabIcons image={Icon.account} />;
+          },
+          tabBarLabel: 'Account',
+          tabBarLabelStyle: {
+            color: 'rgba(143,161,73,1)',
           },
         }}
       />

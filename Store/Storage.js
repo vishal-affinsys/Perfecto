@@ -1,8 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  ActionReducerMapBuilder,
-} from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import APIController from '../API/APIControllers';
 import LocalStorage, {Operations} from '../API/LocalStorage';
 import * as Actions from './Actions';

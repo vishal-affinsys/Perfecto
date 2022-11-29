@@ -9,6 +9,10 @@ export const ADD_PHOTOS_TO_LOCAL = 'ADD_LOCAL_PHOTOS';
 export const ADD_VIDEOS_TO_LOCAL = 'ADD_LOCAL_VIDEOS';
 export const REMOVE_PHOTO_FROM_LOCAL = 'REMOVE_PHOTO';
 export const REMOVE_VIDEO_FROM_LOCAL = 'REMOVE_VIDEO';
+export const CHANGE_VIDEO_QUALITY = 'CHANGE_VIDEO';
+export const CHANGE_PHOTO_QUALITY = 'CHANGE_PHOTO';
+export const GET_VIDEO_QUALITY = 'GET_VIDEO_QUALITY';
+export const GET_PHOTO_QUALITY = 'GET_PHOTO_QUALITY';
 
 // export const Endpoints = {
 //   paginatedData: page =>

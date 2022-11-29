@@ -7,5 +7,8 @@ const Icon = {
   account: require('../assets/images/account.png'),
   wallpaper: require('../assets/images/wallpaper.png'),
   video: require('../assets/images/video.png'),
+  favoriteColor: require('../assets/images/favorite.png'),
+  download: require('../assets/images/download.png'),
+  videoQuality: require('../assets/images/videoQuality.png'),
 };
 export default Icon;
