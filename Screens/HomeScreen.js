@@ -9,6 +9,7 @@ import IconButton from '../components/IconButton';
 import {useSelector, useDispatch} from 'react-redux';
 import {getPaginatedImages} from '../Store/Images';
 import {getPhotoQuality, getVideoQuality} from '../Store/Settings';
+import ScrapeImages from '../helpers/ScrapeModule';
 
 const HomeScreen = () => {
   const [page, setPage] = useState(1);

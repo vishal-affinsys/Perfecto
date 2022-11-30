@@ -14,7 +14,7 @@ export const getPaginatedImages = createAsyncThunk(
   Actions.GET_PAGINATED_IMAGES,
   // callback function
   async page => {
-    const res = await APIController.getData(Endpoints.mockAPIimages);
+    const res = await APIController.getData(Endpoints.paginatedData(page));
     return res;
   },
 );

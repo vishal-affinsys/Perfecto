@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import fontStyle from '../helpers/Font';
 import {useSelector} from 'react-redux';
@@ -15,6 +15,18 @@ import {useSelector} from 'react-redux';
 const CustomList = ({images, setPage, horizontal}) => {
   const navigation = useNavigation();
   const imagesRdx = useSelector(state => state.image);
+
+  useEffect(() => {
+    async function getDatafromUrl() {
+      console.log(images[0].photographer_url);
+      let data = await (await fetch(images[0].photographer_url)).text();
+
+      console.log(data.indexOf('spacing_noMargin__Q_PsJ'));
+    }
+    if (images[0] !== undefined) {
+      getDatafromUrl();
+    }
+  });
 
   return (
     <FlatList
@@ -87,6 +99,7 @@ const CustomList = ({images, setPage, horizontal}) => {
                 navigation.navigate('wallpaperView', params);
               }}>
               <Image
+                // blurRadius={4}
                 source={{uri: item.src.large2x, cache: 'force-cache'}}
                 style={
                   ({
@@ -96,6 +109,7 @@ const CustomList = ({images, setPage, horizontal}) => {
                 }
               />
             </Pressable>
+            <Text></Text>
           </View>
         );
       }}

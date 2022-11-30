@@ -22,6 +22,7 @@ public class MyAppPackage implements ReactPackage {
         List<NativeModule> modules = new ArrayList<>();
 
         modules.add(new SetWallpaperModule(reactContext));
+        modules.add(new ScrapeImages(reactContext));
 
         return modules;
     }
