@@ -1,6 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import APIController, {Endpoints} from '../API/APIControllers';
-import * as Actions from './Actions';
+import APIController, {Endpoints} from '../../API/APIControllers';
+import * as Actions from '../Actions';
 
 const initialState = {
   popularVideos: [],
@@ -14,7 +14,6 @@ export const getVideos = createAsyncThunk(
   Actions.GET_POPULAR_VIDEOS,
   async page => {
     const res = await APIController.getData(Endpoints.popularVideo(page));
-    // const res = await APIController.getData(Endpoints.popularVideo(page));
     return res;
   },
 );

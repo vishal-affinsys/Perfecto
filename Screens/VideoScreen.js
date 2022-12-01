@@ -5,18 +5,18 @@ import {
   BackHandler,
   ToastAndroid,
   Pressable,
-  Image,
   PermissionsAndroid,
 } from 'react-native';
 import Video from 'react-native-video';
-import Theme from '../helpers/Theme';
+import theme from '../helpers/Theme';
 import Orientation from 'react-native-orientation-locker';
 import {Picker} from '@react-native-picker/picker';
-import Icon from '../helpers/Icons';
+import Icon from '../components/Icon';
 import RNFetchBlob from 'rn-fetch-blob';
 import APIController from '../API/APIControllers';
 import {useDispatch, useSelector} from 'react-redux';
-import {removeVideoFromLocal, saveVideosToLocal} from '../Store/Storage';
+import {removeVideoFromLocal, saveVideosToLocal} from '../Store/Reducers';
+import {useTheme} from '@react-navigation/native';
 
 const VideoScreen = ({route}) => {
   const video = route.params.video;
@@ -25,6 +25,8 @@ const VideoScreen = ({route}) => {
   const [selectedValue, setSelectedValue] = useState();
   const [selectedSize, setSelectedSize] = useState(0);
   const [orientation, setOrientation] = useState('Portrait');
+
+  const Theme = useTheme();
 
   const dispatch = useDispatch();
   const storage = useSelector(state => state.storage);
@@ -142,7 +144,8 @@ const VideoScreen = ({route}) => {
   }
 
   return (
-    <View style={Theme.body}>
+    <View style={{...theme.body, ...style.body}}>
+      {/* <StatusBar translucent /> */}
       <Video
         controls={true}
         style={style.videoStyle}
@@ -161,14 +164,18 @@ const VideoScreen = ({route}) => {
         }}
       />
       <View style={style.optionsContainer}>
-        <View style={style.buttonContainer}>
+        <View
+          style={{
+            ...style.buttonContainer,
+            backgroundColor: Theme.colors.card,
+          }}>
           <Pressable
             style={style.pressableStyle}
             onPress={() => {
               pickerRef.current.focus();
             }}
-            android_ripple={{color: 'white'}}>
-            <Image style={style.threeDots} source={Icon.threeDots} />
+            android_ripple={{color: Theme}}>
+            <Icon icon={'threeDots'} style={style.threeDots} />
             <Picker
               ref={pickerRef}
               selectedValue={selectedValue}
@@ -206,6 +213,9 @@ const style = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  body: {
+    padding: 0,
+  },
   text: {
     height: 100,
     width: 100,
@@ -229,12 +239,11 @@ const style = StyleSheet.create({
   buttonContainer: {
     overflow: 'hidden',
     borderRadius: 40,
+    marginRight: 12,
   },
   picker: {
-    color: 'white',
     height: 40,
     flex: 1,
-    backgroundColor: 'white',
     width: 40,
     padding: 8,
     marginRight: 12,

@@ -6,27 +6,18 @@ import {
   Pressable,
   StyleSheet,
   ActivityIndicator,
+  useWindowDimensions,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React from 'react';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import fontStyle from '../helpers/Font';
 import {useSelector} from 'react-redux';
 
 const CustomList = ({images, setPage, horizontal}) => {
   const navigation = useNavigation();
   const imagesRdx = useSelector(state => state.image);
-
-  useEffect(() => {
-    async function getDatafromUrl() {
-      console.log(images[0].photographer_url);
-      let data = await (await fetch(images[0].photographer_url)).text();
-
-      console.log(data.indexOf('spacing_noMargin__Q_PsJ'));
-    }
-    if (images[0] !== undefined) {
-      getDatafromUrl();
-    }
-  });
+  const {width, height} = useWindowDimensions();
+  const Theme = useTheme();
 
   return (
     <FlatList
@@ -37,6 +28,7 @@ const CustomList = ({images, setPage, horizontal}) => {
         return index;
       }}
       ListEmptyComponent={() => {
+        console.log(imagesRdx.loading, imagesRdx.status);
         if (imagesRdx.loading) {
           return (
             <View style={style.activityContainer}>
@@ -57,14 +49,18 @@ const CustomList = ({images, setPage, horizontal}) => {
         return images.length === 0 ? (
           <View />
         ) : (
-          <View style={style.loadContainer}>
+          <View
+            style={{
+              ...style.loadContainer,
+              backgroundColor: Theme.colors.card,
+            }}>
             <Pressable
               style={style.pressableComponent}
-              android_ripple={{color: 'white'}}
+              android_ripple={{color: Theme.colors.rippleColor}}
               onPress={() => {
                 setPage(previous => previous + 1);
               }}>
-              <Text style={{...fontStyle.h6, ...style.footerText}}>
+              <Text style={{...style.footerText, color: Theme.fonts.h6.color}}>
                 Load more
               </Text>
             </Pressable>
@@ -99,17 +95,15 @@ const CustomList = ({images, setPage, horizontal}) => {
                 navigation.navigate('wallpaperView', params);
               }}>
               <Image
-                // blurRadius={4}
+                resizeMode="cover"
+                resizeMethod="scale"
                 source={{uri: item.src.large2x, cache: 'force-cache'}}
-                style={
-                  ({
-                    aspectRatio: item.height / item.width,
-                  },
-                  style.imageStyle)
-                }
+                style={{
+                  height: Math.max(height / 2 - 100, 200),
+                  borderRadius: width / 18,
+                }}
               />
             </Pressable>
-            <Text></Text>
           </View>
         );
       }}
@@ -136,7 +130,6 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   loadContainer: {
-    backgroundColor: 'rgba(40,40,40,1)',
     marginRight: 20,
     marginBottom: 10,
     overflow: 'hidden',
@@ -147,7 +140,7 @@ const style = StyleSheet.create({
     padding: 8,
   },
   imageStyle: {
-    height: 300,
+    // height: 300,
     borderRadius: 12,
   },
   footerText: {

@@ -1,7 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
+import Icon from '../components/Icon';
 import {Dropdown} from 'react-native-element-dropdown';
 import fontStyle from '../helpers/Font';
+import {useTheme} from '@react-navigation/native';
 
 const ListTile = ({
   options,
@@ -12,8 +14,9 @@ const ListTile = ({
   selectedQuality,
   setSelectedQuality,
 }) => {
+  const Theme = useTheme();
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, backgroundColor: Theme.colors.card}}>
       <Dropdown
         data={options}
         style={styles.drop}
@@ -34,8 +37,8 @@ const ListTile = ({
         renderLeftIcon={() => {
           return (
             <View style={styles.leftContainer}>
-              <Image source={icon} style={styles.leftImage} />
-              <Text style={{...fontStyle.bodyText, ...styles.text}}>
+              <Icon icon={icon} style={styles.leftImage} />
+              <Text style={{...Theme.fonts.bodyText, ...styles.text}}>
                 {headerLabel}
               </Text>
             </View>
@@ -44,11 +47,10 @@ const ListTile = ({
         renderRightIcon={() => {
           return (
             <View style={styles.rightContainer}>
-              <Text style={styles.rightText}>{selectedQuality}</Text>
-              <Image
-                source={require('../assets/images/drop-down.png')}
-                style={styles.imageStyle}
-              />
+              <Text style={{...Theme.fonts.bodyText, ...styles.rightText}}>
+                {selectedQuality}
+              </Text>
+              <Icon icon={'dropDown'} style={styles.imageStyle} />
             </View>
           );
         }}
@@ -60,7 +62,6 @@ const ListTile = ({
 export default ListTile;
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(50,50,50,1)',
     padding: 12,
     marginVertical: 5,
     borderRadius: 12,
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
     display: 'none',
   },
   rightText: {
-    color: 'rgba(200,200,200,1)',
     fontSize: 12,
   },
   text: {

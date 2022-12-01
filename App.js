@@ -1,32 +1,40 @@
-import React from 'react';
-import HomeScreen from './Screens/HomeScreen';
-import {NavigationContainer} from '@react-navigation/native';
+import React, {useEffect} from 'react';
+import {NavigationContainer, useTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import WallpaperView from './Screens/WallpaperView';
-import SearchScreen from './Screens/SearchScreen';
-import PreviewScreen from './Screens/PreviewScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import FavoriteScreen from './Screens/FavoriteScreen';
-import AccountScreen from './Screens/AccountScreen';
-import ExploreScreen from './Screens/ExploreScreen';
 import BottomTabIcons from './components/BottomTabIcons';
 import Icon from './helpers/Icons';
-import VideoScreen from './Screens/VideoScreen';
-import SearchVideo from './Screens/SearchVideo';
-import {Provider} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import {store} from './Store/Store';
+import {useColorScheme} from 'react-native';
+import {
+  AccountScreen,
+  ExploreScreen,
+  FavoriteScreen,
+  HomeScreen,
+  PreviewScreen,
+  SearchScreen,
+  SearchVideo,
+  VideoScreen,
+  WallpaperView,
+} from './Screens';
+import {CustomDarkTheme, CustomLightTheme} from './helpers/ThemeData';
+import {getTheme} from './Store/Reducers';
+import {useDispatch} from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 
 const Stack = createNativeStackNavigator();
 
 const TabScreen = () => {
+  // console.log(DarkTheme);
+  const Theme = useTheme();
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveBackgroundColor: 'rgba(40,40,40,1)',
-        tabBarInactiveBackgroundColor: 'rgba(25,25,25,1)',
+        tabBarActiveBackgroundColor: Theme.colors.card,
+        tabBarInactiveBackgroundColor: Theme.colors.background,
         tabBarLabelStyle: {color: 'white'},
         tabBarAllowFontScaling: true,
       }}>
@@ -35,7 +43,7 @@ const TabScreen = () => {
         component={HomeScreen}
         options={{
           tabBarIcon: ({focused}) => {
-            return <BottomTabIcons image={Icon.wallpaper} />;
+            return <BottomTabIcons image={Icon.navIcons.wallpaper} />;
           },
           tabBarLabel: 'Wallpaper',
           tabBarLabelStyle: {
@@ -48,7 +56,7 @@ const TabScreen = () => {
         component={ExploreScreen}
         options={{
           tabBarIcon: ({focused}) => {
-            return <BottomTabIcons image={Icon.video} />;
+            return <BottomTabIcons image={Icon.navIcons.video} />;
           },
           tabBarLabel: 'Video',
           tabBarLabelStyle: {
@@ -61,7 +69,7 @@ const TabScreen = () => {
         component={FavoriteScreen}
         options={{
           tabBarIcon: ({focused}) => {
-            return <BottomTabIcons image={Icon.favoriteColor} />;
+            return <BottomTabIcons image={Icon.navIcons.favoriteColor} />;
           },
           tabBarLabel: 'Favorite',
           tabBarLabelStyle: {
@@ -74,7 +82,7 @@ const TabScreen = () => {
         component={AccountScreen}
         options={{
           tabBarIcon: ({focused}) => {
-            return <BottomTabIcons image={Icon.account} />;
+            return <BottomTabIcons image={Icon.navIcons.account} />;
           },
           tabBarLabel: 'Account',
           tabBarLabelStyle: {
@@ -86,10 +94,19 @@ const TabScreen = () => {
   );
 };
 
-const App = () => {
+const ReduxApp = () => {
+  const colors = useColorScheme();
+  const ThemeRdx = useSelector(state => state.theme);
   return (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer
+        theme={
+          ThemeRdx.themeData
+            ? ThemeRdx.themeData
+            : colors === 'dark'
+            ? CustomDarkTheme
+            : CustomLightTheme
+        }>
         <Stack.Navigator>
           <Stack.Screen
             name="Home"
@@ -127,10 +144,10 @@ const App = () => {
   );
 };
 
-// const ReduxApp = () => (
-//   <Provider store={store}>
-//     <App />
-//   </Provider>
-// );
+const App = () => (
+  <Provider store={store}>
+    <ReduxApp />
+  </Provider>
+);
 
 export default App;

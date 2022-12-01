@@ -1,6 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import LocalStorage, {Operations} from '../API/LocalStorage';
-import * as Actions from './Actions';
+import LocalStorage, {Operations} from '../../API/LocalStorage';
+import * as Actions from '../Actions';
 
 const initialState = {
   videoQuality: {pixels: '1080p', quality: 'FHD'},

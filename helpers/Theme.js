@@ -9,7 +9,6 @@ const Theme = StyleSheet.create({
   },
   body: {
     padding: 4,
-    backgroundColor: 'rgba(25,25,25,1)',
     flex: 1,
   },
 });

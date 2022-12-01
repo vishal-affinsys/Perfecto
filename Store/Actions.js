@@ -13,15 +13,5 @@ export const CHANGE_VIDEO_QUALITY = 'CHANGE_VIDEO';
 export const CHANGE_PHOTO_QUALITY = 'CHANGE_PHOTO';
 export const GET_VIDEO_QUALITY = 'GET_VIDEO_QUALITY';
 export const GET_PHOTO_QUALITY = 'GET_PHOTO_QUALITY';
-
-// export const Endpoints = {
-//   paginatedData: page =>
-//     `https://api.pexels.com/v1/curated?page=${page}&per_page=40`,
-//   search: (page, query) =>
-//     `https://api.pexels.com/v1/search/?page=${page}&per_page=40&query=${query}`,
-//   popularVideo: page =>
-//     `https://api.pexels.com/v1/videos/popular/?page=${page}&per_page=40`,
-//   mockAPI: 'https://mocki.io/v1/5b4c29e0-775d-4a94-b5bb-dd98fc617961',
-//   searchVideo: (page, query) =>
-//     `https://api.pexels.com/videos/search?query=${query}&per_page=40&page=${page}`,
-// };
+export const CHANGE_THEME = 'CHANGE_THEME';
+export const GET_THEME = 'GET_THEME';

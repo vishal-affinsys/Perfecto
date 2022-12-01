@@ -1,18 +1,20 @@
 import React, {useEffect} from 'react';
-import {View, Image, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import fontStyle from '../helpers/Font';
-import Theme from '../helpers/Theme';
+import theme from '../helpers/Theme';
 import Divider from '../components/Divider';
 import ListTile from '../components/ListTile';
-import {imageQuality, videoQuality} from '../helpers/Quality';
-import Icon from '../helpers/Icons';
+import {imageQuality, selectedTheme, videoQuality} from '../helpers/Quality';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   changeVideoQuality,
   changePhotoQuality,
   getPhotoQuality,
   getVideoQuality,
-} from '../Store/Settings';
+  setTheme,
+} from '../Store/Reducers';
+import {useTheme} from '@react-navigation/native';
+import Icon from '../components/Icon';
 
 const AccountScreen = () => {
   const username = 'Vishal';
@@ -24,33 +26,29 @@ const AccountScreen = () => {
   }, [dispatch]);
 
   const settings = useSelector(state => state.setting);
+  const ThemeRdx = useSelector(state => state.theme);
   const dispatch = useDispatch();
+  const Theme = useTheme();
   return (
-    <View style={Theme.body}>
+    <View style={theme.body}>
       <View style={style.container}>
-        <Image
-          style={style.imageStyle}
-          source={require('../assets/images/accountScreen.png')}
-        />
+        <Icon icon={'accountScreen'} style={style.imageStyle} />
         <View style={style.greetings}>
-          <Text style={fontStyle.h3}>Hi, </Text>
+          <Text style={Theme.fonts.h3}>Hi, </Text>
           <Text style={{...fontStyle.h3, ...style.nameStyle}}>{username}</Text>
         </View>
       </View>
       <Divider />
       <View style={style.settingsContainer}>
-        <Image
-          source={require('../assets/images/settings.png')}
-          style={style.settingsImage}
-        />
-        <Text style={{...fontStyle.h3, ...style.settings}}>Settings</Text>
+        <Icon icon={'settings'} style={style.settingsImage} />
+        <Text style={{...Theme.fonts.h3, ...style.settings}}>Settings</Text>
       </View>
       <ListTile
         headerLabel={tileName}
         label={'pixels'}
         options={videoQuality}
         value={'quality'}
-        icon={Icon.videoQuality}
+        icon={'videoQuality'}
         selectedQuality={settings.videoQuality.pixels}
         setSelectedQuality={item => {
           dispatch(changeVideoQuality(item));
@@ -64,8 +62,18 @@ const AccountScreen = () => {
         setSelectedQuality={item => {
           dispatch(changePhotoQuality(item));
         }}
-        icon={Icon.download}
-        // value={'quality'}
+        icon={'download'}
+      />
+      <ListTile
+        headerLabel={'Theme'}
+        label={'theme'}
+        options={selectedTheme}
+        selectedQuality={ThemeRdx.selectedTheme.theme}
+        setSelectedQuality={item => {
+          console.log(item);
+          dispatch(setTheme(item));
+        }}
+        icon={'theme'}
       />
     </View>
   );

@@ -1,16 +1,22 @@
 import React from 'react';
 import {View, Pressable, Image, StyleSheet} from 'react-native';
+import {useTheme} from '@react-navigation/native';
+import Icon from '../helpers/Icons';
 
 const IconButton = ({icon, onPress, styleImage, styleContainer}) => {
+  const theme = useTheme();
   return (
-    <View style={{...style.searchContainer, ...styleContainer}}>
+    <View style={{backgroundColor: theme.colors.card, ...styleContainer}}>
       <Pressable
         onPress={() => {
           onPress();
         }}
         style={style.searchPressable}
-        android_ripple={{color: 'white'}}>
-        <Image style={styleImage} source={icon} />
+        android_ripple={{color: theme.colors.rippleColor}}>
+        <Image
+          style={styleImage}
+          source={theme.dark ? Icon.dark[icon] : Icon.light[icon]}
+        />
       </Pressable>
     </View>
   );
@@ -18,7 +24,6 @@ const IconButton = ({icon, onPress, styleImage, styleContainer}) => {
 
 const style = StyleSheet.create({
   searchContainer: {
-    backgroundColor: 'rgba(40,40,40,1)',
     borderRadius: 40,
     overflow: 'hidden',
     // marginRight: 20,

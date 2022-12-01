@@ -1,16 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, StatusBar} from 'react-native';
 import fontStyle from '../helpers/Font';
-import {useNavigation} from '@react-navigation/native';
-import Theme from '../helpers/Theme';
-import Icon from '../helpers/Icons';
+import {useNavigation, useTheme} from '@react-navigation/native';
+import theme from '../helpers/Theme';
 import CustomList from '../components/CustomList';
 import IconButton from '../components/IconButton';
 import {useSelector, useDispatch} from 'react-redux';
-import {getPaginatedImages} from '../Store/Images';
-import {getPhotoQuality, getVideoQuality} from '../Store/Settings';
-import ScrapeImages from '../helpers/ScrapeModule';
-
+import {
+  getPhotoQuality,
+  getVideoQuality,
+  getPaginatedImages,
+  getTheme,
+} from '../Store/Reducers';
 const HomeScreen = () => {
   const [page, setPage] = useState(1);
   const navigation = useNavigation();
@@ -22,14 +23,21 @@ const HomeScreen = () => {
     dispatch(getPaginatedImages(page));
     dispatch(getPhotoQuality());
     dispatch(getVideoQuality());
+    dispatch(getTheme());
   }, [dispatch, page]);
 
+  const Theme = useTheme();
+
   return (
-    <View style={Theme.body}>
-      <StatusBar backgroundColor={'rgba(25,25,25,0.9)'} animated={true} />
+    <View style={theme.body}>
+      <StatusBar
+        backgroundColor={Theme.colors.border}
+        animated={true}
+        barStyle={Theme.dark ? 'light-content' : 'dark-content'}
+      />
       <View style={style.header}>
         <View>
-          <Text style={{...fontStyle.h1, ...Theme.headingStyle}}>Trending</Text>
+          <Text style={Theme.fonts.h1}>Trending</Text>
           <Text
             style={{
               ...fontStyle.h1,
@@ -45,14 +53,13 @@ const HomeScreen = () => {
           onPress={() => {
             navigation.navigate('searchScreen');
           }}
-          icon={Icon.search}
+          icon={'search'}
         />
       </View>
       <CustomList images={images.images} setPage={setPage} />
     </View>
   );
 };
-
 const style = StyleSheet.create({
   header: {
     flexDirection: 'row',
@@ -70,7 +77,6 @@ const style = StyleSheet.create({
   },
 
   searchContainer: {
-    backgroundColor: 'rgba(40,40,40,1)',
     overflow: 'hidden',
     borderRadius: 40,
     marginRight: 12,

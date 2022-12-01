@@ -1,14 +1,18 @@
 import {configureStore, combineReducers} from '@reduxjs/toolkit';
-import imageReducer from './Images';
-import VideoReducer from './Videos';
-import storageReducer from './Storage';
-import Settings from './Settings';
+import {
+  imageReducer,
+  VideoReducer,
+  storageReducer,
+  Settings,
+  ThemeReducer,
+} from './Reducers';
 
 const reducer = combineReducers({
   image: imageReducer,
   video: VideoReducer,
   storage: storageReducer,
   setting: Settings,
+  theme: ThemeReducer,
 });
 
 export const store = configureStore({

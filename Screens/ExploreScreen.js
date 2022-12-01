@@ -1,13 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import fontStyle from '../helpers/Font';
-import Theme from '../helpers/Theme';
-import {useNavigation} from '@react-navigation/native';
-import Icon from '../helpers/Icons';
+import theme from '../helpers/Theme';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import VideoList from '../components/VideoList';
 import IconButton from '../components/IconButton';
 import {useDispatch, useSelector} from 'react-redux';
-import {getVideos} from '../Store/Videos';
+import {getVideos} from '../Store/Reducers';
 
 const ExploreScreen = () => {
   const [page, setPage] = useState(1);
@@ -15,23 +14,28 @@ const ExploreScreen = () => {
 
   const dispatch = useDispatch();
   const videoRdx = useSelector(state => state.video);
+  const Theme = useTheme();
 
   useEffect(() => {
     dispatch(getVideos(page));
   }, [dispatch, page]);
 
   return (
-    <View style={Theme.body}>
+    <View style={theme.body}>
       <View style={style.header}>
         <View>
-          <Text style={{...fontStyle.h1, ...Theme.headingStyle}}>Popular</Text>
+          <Text style={Theme.fonts.h1}>Popular</Text>
           <Text
-            style={{...fontStyle.h1, ...Theme.headingStyle, ...style.videos}}>
+            style={{
+              ...fontStyle.h1,
+              ...Theme.headingStyle,
+              ...style.videos,
+            }}>
             Videos
           </Text>
         </View>
         <IconButton
-          icon={Icon.search}
+          icon={'search'}
           onPress={() => {
             navigation.navigate('searchVideo');
           }}
@@ -51,7 +55,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   searchContainer: {
-    backgroundColor: 'rgba(40,40,40,1)',
     borderRadius: 40,
     overflow: 'hidden',
     marginRight: 20,

@@ -14,3 +14,9 @@ export const imageQuality = [
   {size: 'Landscape', quality: 'landscape'},
   {size: 'Tiny', quality: 'tiny'},
 ];
+
+export const selectedTheme = [
+  {theme: 'Dark', value: 'dark'},
+  {theme: 'Light', value: 'light'},
+  {theme: 'System default', value: 'system'},
+];

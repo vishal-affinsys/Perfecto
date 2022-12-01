@@ -1,16 +1,23 @@
 import React, {useState, useRef} from 'react';
-import {View, StyleSheet, ToastAndroid, Pressable, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ToastAndroid,
+  Pressable,
+  Text,
+  Image,
+} from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import Theme from '../helpers/Theme';
+import theme from '../helpers/Theme';
 import RNFetchBlob from 'rn-fetch-blob';
 import {PermissionsAndroid} from 'react-native';
 import APIController from '../API/APIControllers';
 import SetWallpaperModule from '../helpers/SetWallpaper';
 import {Picker} from '@react-native-picker/picker';
-import Icon from '../helpers/Icons';
-import {useNavigation} from '@react-navigation/native';
+import Icon from '../components/Icon';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {removeImageFromLocal, saveImagesToLocal} from '../Store/Storage';
+import {removeImageFromLocal, saveImagesToLocal} from '../Store/Reducers';
 
 const WallpaperView = ({route}) => {
   const large2x = route.params.large2x;
@@ -23,6 +30,7 @@ const WallpaperView = ({route}) => {
   const storage = useSelector(state => state.storage);
 
   const settings = useSelector(state => state.setting);
+  const Theme = useTheme();
 
   const dispatch = useDispatch();
 
@@ -91,6 +99,13 @@ const WallpaperView = ({route}) => {
       await SetWallpaperModule.setWallpaper(original[index].url, (res, msg) => {
         console.log(res, msg);
       });
+      ToastAndroid.showWithGravityAndOffset(
+        'Setting Wallpaper',
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50,
+      );
     } else if (itemValue === 'preview') {
       console.log(itemIndex, itemValue, original[index].url);
 
@@ -122,16 +137,20 @@ const WallpaperView = ({route}) => {
   const pickerRef = useRef();
 
   return (
-    <View style={{...Theme.body, ...style.body}}>
+    <View style={{...theme.body, ...style.body}}>
       <View style={style.optionsContainer}>
-        <View style={style.buttonContainer}>
+        <View
+          style={{
+            backgroundColor: Theme.colors.card,
+            ...style.buttonContainer,
+          }}>
           <Pressable
             style={style.pressableStyle}
             onPress={() => {
               pickerRef.current.focus();
             }}
-            android_ripple={{color: 'white'}}>
-            <Image style={style.threeDots} source={Icon.threeDots} />
+            android_ripple={{color: Theme.colors.rippleColor}}>
+            <Icon icon={'threeDots'} style={style.threeDots} />
             <Picker
               ref={pickerRef}
               selectedValue={selectedValue}
@@ -163,10 +182,24 @@ const WallpaperView = ({route}) => {
       </View>
       <ImageViewer
         saveToLocalByLongPress={true}
-        style={style.imageStyle}
-        backgroundColor={'rgba(25,25,25,1)'}
+        style={{...style.imageStyle}}
+        backgroundColor={Theme.colors.background}
         imageUrls={large2x}
+        renderHeader={val => {
+          return (
+            <Text style={{...Theme.fonts.h5, ...style.imageHeader}}>
+              {val + 1}/{original.length}
+            </Text>
+          );
+        }}
+        background={false}
         index={index}
+        renderIndicator={val => {
+          return null;
+        }}
+        renderImage={image => {
+          return <Image source={{uri: image.source.uri}} style={image.style} />;
+        }}
         pageAnimateTime={100}
         onChange={i => {
           setIndex(i);
@@ -200,7 +233,6 @@ const style = StyleSheet.create({
     width: 40,
   },
   buttonContainer: {
-    backgroundColor: 'rgba(40,40,40,1)',
     overflow: 'hidden',
     borderRadius: 40,
   },
@@ -211,7 +243,6 @@ const style = StyleSheet.create({
     color: 'white',
     height: 40,
     flex: 1,
-    backgroundColor: 'white',
     width: 40,
     padding: 8,
     marginRight: 12,
@@ -220,8 +251,9 @@ const style = StyleSheet.create({
   options: {
     fontWeight: 'bold',
     fontSize: 20,
-    color: 'rgba(240,240,240,1)',
-    backgroundColor: 'rgba(40,40,40,1)',
+  },
+  imageHeader: {
+    textAlign: 'center',
   },
 });
 

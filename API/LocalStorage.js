@@ -5,6 +5,7 @@ export const Operations = {
   photo: 'photo',
   photoQuality: 'photoQ',
   videoQuality: 'videoQ',
+  theme: 'Theme',
 };
 
 class LocalStorage {
@@ -12,7 +13,7 @@ class LocalStorage {
     try {
       const jsonValue = JSON.stringify(data);
       await AsyncStorage.setItem(key, jsonValue);
-      APIController.logger({key, data});
+      APIController.logger(data);
     } catch (e) {
       console.log(e);
     }

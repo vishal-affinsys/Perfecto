@@ -1,13 +1,14 @@
 import {View, StyleSheet} from 'react-native';
 import React from 'react';
+import {useTheme} from '@react-navigation/native';
 
 const Divider = () => {
-  return <View style={style.divider} />;
+  const Theme = useTheme();
+  return <View style={{...style.divider, borderColor: Theme.colors.border}} />;
 };
 
 const style = StyleSheet.create({
   divider: {
-    borderBottomColor: 'rgba(200,200,200,1)',
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginVertical: 12,
   },

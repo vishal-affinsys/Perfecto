@@ -1,6 +1,6 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import APIController, {Endpoints} from '../API/APIControllers';
-import * as Actions from './Actions';
+import APIController, {Endpoints} from '../../API/APIControllers';
+import * as Actions from '../Actions';
 const initialState = {
   images: [],
   searchedImages: [],

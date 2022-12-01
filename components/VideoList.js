@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useTheme} from '@react-navigation/native';
 import fontStyle from '../helpers/Font';
 import {useSelector} from 'react-redux';
 import APIController from '../API/APIControllers';
@@ -20,6 +20,8 @@ const VideoList = ({videos, setPage}) => {
 
   const videoRdx = useSelector(state => state.video);
   const settings = useSelector(state => state.setting);
+
+  const Theme = useTheme();
 
   function sortVideos() {
     let videoLink = [];
@@ -75,14 +77,18 @@ const VideoList = ({videos, setPage}) => {
         return videos.length === 0 ? (
           <View />
         ) : (
-          <View style={style.loadContainer}>
+          <View
+            style={{
+              ...style.loadContainer,
+              backgroundColor: Theme.colors.card,
+            }}>
             <Pressable
               style={style.pressableComponent}
-              android_ripple={{color: 'white'}}
+              android_ripple={{color: Theme.colors.rippleColor}}
               onPress={() => {
                 setPage(previous => previous + 1);
               }}>
-              <Text style={{...fontStyle.h6, ...style.footerText}}>
+              <Text style={{...style.footerText, color: Theme.fonts.h6.color}}>
                 Load more
               </Text>
             </Pressable>
@@ -156,7 +162,7 @@ const style = StyleSheet.create({
     // width: '100%',
   },
   loadContainer: {
-    backgroundColor: 'rgba(40,40,40,1)',
+    marginTop: 12,
     marginRight: 20,
     marginBottom: 10,
     overflow: 'hidden',
