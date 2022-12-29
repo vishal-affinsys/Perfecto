@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 12,
     marginVertical: 5,
+    marginHorizontal: 3,
     borderRadius: 12,
   },
   drop: {

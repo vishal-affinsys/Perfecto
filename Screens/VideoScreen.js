@@ -50,17 +50,17 @@ const VideoScreen = ({route}) => {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Storage Permission Granted.');
+        APIController.logger('Storage Permission Granted.');
       } else {
       }
     } catch (err) {
-      console.warn(err);
+      APIController.logger(err);
     }
-    console.log(video);
+    APIController.logger('VIDEO:' + JSON.stringify(video));
     const {config, fs} = RNFetchBlob;
     let PictureDir = fs.dirs.PictureDir;
 
-    APIController.logger(PictureDir);
+    APIController.logger('Picture_dir:' + PictureDir);
 
     let options = {
       fileCache: true,
@@ -77,13 +77,13 @@ const VideoScreen = ({route}) => {
       },
     };
 
-    APIController.logger(options);
+    APIController.logger('Download Options:' + JSON.stringify(options));
 
     config(options)
       .fetch('GET', video)
       .then(res => {
         //Showing alert after successful downloading
-        console.log('res -> ', JSON.stringify(res));
+        APIController.logger('res -> ' + JSON.stringify(res));
       });
   }
 
@@ -91,7 +91,7 @@ const VideoScreen = ({route}) => {
     if (func === 'download') {
       await downloadVideo();
       ToastAndroid.showWithGravityAndOffset(
-        'Downloading Image',
+        'Downloading Video',
         0.2,
         ToastAndroid.BOTTOM,
         25,
@@ -99,7 +99,7 @@ const VideoScreen = ({route}) => {
       );
     } else if (func === 'resize') {
       setSelectedSize(previous => (previous + 1) % 4);
-      console.log(selectedSize);
+      APIController.logger('Selected Size:' + JSON.stringify(selectedSize));
       ToastAndroid.showWithGravityAndOffset(
         mode[selectedSize],
         0.2,
@@ -157,10 +157,10 @@ const VideoScreen = ({route}) => {
         resizeMode={mode[selectedSize]}
         volume={10}
         onLoad={data => {
-          console.log(data);
+          APIController.logger('On load data->' + JSON.stringify(data));
         }}
         onBuffer={data => {
-          console.log(data);
+          APIController.logger('On Buffer data->' + JSON.stringify(data));
         }}
       />
       <View style={style.optionsContainer}>

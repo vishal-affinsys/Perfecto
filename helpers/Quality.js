@@ -20,3 +20,13 @@ export const selectedTheme = [
   {theme: 'Light', value: 'light'},
   {theme: 'System default', value: 'system'},
 ];
+
+export let logs = [];
+
+export function createLogs(message) {
+  logs.push({date: new Date(), message: message});
+}
+
+export function clearLogs() {
+  logs = [];
+}

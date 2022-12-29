@@ -18,8 +18,8 @@ import {
   removeImageFromLocal,
   removeVideoFromLocal,
 } from './Storage';
-import {setTheme, getTheme, getThemeData} from './Theme';
-import {getVideos, getSearchedVideos} from './Videos';
+import {setTheme, getTheme} from './Theme';
+import {getVideos, getSearchedVideos, clearVideoSearch} from './Videos';
 
 export {imageReducer, VideoReducer, storageReducer, Settings, ThemeReducer};
 export {
@@ -40,5 +40,5 @@ export {
   getTheme,
   getVideos,
   getSearchedVideos,
-  getThemeData,
+  clearVideoSearch,
 };

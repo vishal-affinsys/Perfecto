@@ -12,6 +12,7 @@ import {
   getPaginatedImages,
   getTheme,
 } from '../Store/Reducers';
+import APIController from '../API/APIControllers';
 const HomeScreen = () => {
   const [page, setPage] = useState(1);
   const navigation = useNavigation();
@@ -24,6 +25,7 @@ const HomeScreen = () => {
     dispatch(getPhotoQuality());
     dispatch(getVideoQuality());
     dispatch(getTheme());
+    // APIController.getToken();
   }, [dispatch, page]);
 
   const Theme = useTheme();

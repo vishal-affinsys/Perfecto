@@ -1,11 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import APIController from './APIControllers';
+
 export const Operations = {
   video: 'video',
   photo: 'photo',
   photoQuality: 'photoQ',
   videoQuality: 'videoQ',
   theme: 'Theme',
+  logs: 'Logs',
 };
 
 class LocalStorage {
@@ -23,6 +25,7 @@ class LocalStorage {
     try {
       const jsonValue = await AsyncStorage.getItem(key);
       let res = jsonValue != null ? JSON.parse(jsonValue) : [];
+      APIController.logger(res);
       return res;
     } catch (e) {
       console.log(e);
@@ -36,9 +39,10 @@ class LocalStorage {
         data = [];
       }
       data.push(item);
+      APIController.logger(data);
       const jsonValue = JSON.stringify(data);
       await AsyncStorage.setItem(key, jsonValue);
-      APIController.logger(data);
+      console.log(data);
     } catch (e) {
       console.log(e);
     }
@@ -54,6 +58,7 @@ class LocalStorage {
       data = data.filter(val => val.id !== itemId);
       const jsonValue = JSON.stringify(data);
       await AsyncStorage.setItem(key, jsonValue);
+      APIController.logger(data);
       return data;
     } catch (e) {
       console.log(e);

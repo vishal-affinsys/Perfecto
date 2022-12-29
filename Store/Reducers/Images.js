@@ -58,6 +58,7 @@ export const imageSlice = createSlice({
       })
       .addCase(getSearchImages.pending, (state, action) => {
         state.status = 'loading';
+        state.loading = true;
       })
       .addCase(getSearchImages.fulfilled, (state, action) => {
         state.status = 'succeeded';

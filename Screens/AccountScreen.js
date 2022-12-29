@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, Text, Pressable} from 'react-native';
 import fontStyle from '../helpers/Font';
 import theme from '../helpers/Theme';
 import Divider from '../components/Divider';
@@ -13,12 +13,14 @@ import {
   getVideoQuality,
   setTheme,
 } from '../Store/Reducers';
-import {useTheme} from '@react-navigation/native';
+import {useTheme, useNavigation} from '@react-navigation/native';
 import Icon from '../components/Icon';
 
 const AccountScreen = () => {
   const username = 'Vishal';
   const tileName = 'Download/Watch\nVideo Quality';
+  const [count, setCount] = useState(5);
+  const navigator = useNavigation();
 
   useEffect(() => {
     dispatch(getPhotoQuality());
@@ -41,7 +43,17 @@ const AccountScreen = () => {
       <Divider />
       <View style={style.settingsContainer}>
         <Icon icon={'settings'} style={style.settingsImage} />
-        <Text style={{...Theme.fonts.h3, ...style.settings}}>Settings</Text>
+        <Pressable
+          onPress={() => {
+            setCount(previous => previous - 1);
+            if (count === 1) {
+              setCount(5);
+              navigator.navigate('logScreen');
+            }
+            console.log(count);
+          }}>
+          <Text style={{...Theme.fonts.h3, ...style.settings}}>Settings</Text>
+        </Pressable>
       </View>
       <ListTile
         headerLabel={tileName}
@@ -70,7 +82,6 @@ const AccountScreen = () => {
         options={selectedTheme}
         selectedQuality={ThemeRdx.selectedTheme.theme}
         setSelectedQuality={item => {
-          console.log(item);
           dispatch(setTheme(item));
         }}
         icon={'theme'}

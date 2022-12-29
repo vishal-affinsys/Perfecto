@@ -44,13 +44,13 @@ const WallpaperView = ({route}) => {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Storage Permission Granted.');
+        APIController.logger('Storage Permission Granted.');
       } else {
       }
     } catch (err) {
-      console.warn(err);
+      APIController.logger(err);
     }
-    console.log(original[index].url);
+    APIController.logger(original[index].url);
     const {config, fs} = RNFetchBlob;
     let PictureDir = fs.dirs.PictureDir;
 
@@ -71,16 +71,18 @@ const WallpaperView = ({route}) => {
       },
     };
 
-    APIController.logger(options);
-    APIController.logger(settings.imageQuality.quality);
-    APIController.logger(src[index].src);
-    console.log(index);
+    APIController.logger('Downloading options: ' + JSON.stringify(options));
+    APIController.logger('Downloading image: ' + settings.imageQuality.quality);
+    APIController.logger(
+      'Download image SRC: ' + JSON.stringify(src[index].src),
+    );
+    APIController.logger('Downloading Image on Index:' + index);
 
     config(options)
       .fetch('GET', src[index].src[settings.imageQuality.quality])
       .then(res => {
         //Showing alert after successful downloading
-        console.log('res -> ', JSON.stringify(res));
+        APIController.logger('res -> ' + JSON.stringify(res));
       });
   }
 
@@ -97,7 +99,7 @@ const WallpaperView = ({route}) => {
       );
     } else if (itemValue === 'set') {
       await SetWallpaperModule.setWallpaper(original[index].url, (res, msg) => {
-        console.log(res, msg);
+        APIController.logger(res + ' ' + msg);
       });
       ToastAndroid.showWithGravityAndOffset(
         'Setting Wallpaper',
@@ -107,7 +109,9 @@ const WallpaperView = ({route}) => {
         50,
       );
     } else if (itemValue === 'preview') {
-      console.log(itemIndex, itemValue, original[index].url);
+      APIController.logger(
+        itemIndex + ' ' + itemValue + ' ' + original[index].url,
+      );
 
       navigation.navigate('previewScreen', {src: large2x[index].url});
     } else if (itemValue === 'favorite') {

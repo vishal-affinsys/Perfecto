@@ -85,7 +85,6 @@ const settings = createSlice({
         state.status.image = 'success';
 
         if (action.payload.length !== 0) {
-          console.log(action.payload);
           state.imageQuality = action.payload;
         }
       })

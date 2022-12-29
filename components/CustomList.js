@@ -23,12 +23,12 @@ const CustomList = ({images, setPage, horizontal}) => {
     <FlatList
       style={style.listStyle}
       horizontal={horizontal}
+      contentContainerStyle={style.listGrow}
       data={images}
       keyExtractor={(item, index) => {
         return index;
       }}
       ListEmptyComponent={() => {
-        console.log(imagesRdx.loading, imagesRdx.status);
         if (imagesRdx.loading) {
           return (
             <View style={style.activityContainer}>
@@ -125,9 +125,11 @@ const style = StyleSheet.create({
   },
   activityContainer: {
     flex: 1,
-    height: 600,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  listGrow: {
+    flexGrow: 1,
   },
   loadContainer: {
     marginRight: 20,

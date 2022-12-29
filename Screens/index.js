@@ -7,6 +7,7 @@ import PreviewScreen from './PreviewScreen';
 import SearchVideo from './SearchVideo';
 import VideoScreen from './VideoScreen';
 import WallpaperView from './WallpaperView';
+import LogScreen from './LogScreen';
 
 export {
   AccountScreen,
@@ -18,4 +19,5 @@ export {
   SearchVideo,
   VideoScreen,
   WallpaperView,
+  LogScreen,
 };

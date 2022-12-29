@@ -14,7 +14,7 @@ import fontStyle from '../helpers/Font';
 import {useSelector} from 'react-redux';
 import APIController from '../API/APIControllers';
 
-const VideoList = ({videos, setPage}) => {
+const VideoList = ({videos, setPage, styleList}) => {
   const {navigate} = useNavigation();
   const size = useWindowDimensions();
 
@@ -22,6 +22,24 @@ const VideoList = ({videos, setPage}) => {
   const settings = useSelector(state => state.setting);
 
   const Theme = useTheme();
+
+  function searchVideo(video_files, data) {
+    for (let j = 0; j < video_files.length; j++) {
+      if (video_files[j].height === 1080) {
+        data.FHD.link = video_files[j].link;
+        data.FHD.height = 1080;
+      } else if (video_files[j].height === 720) {
+        data.HD.link = video_files[j].link;
+        data.HD.height = 720;
+      } else if (
+        video_files[j].height <= 720 &&
+        video_files[j].height > data.SD.height
+      ) {
+        data.SD.link = video_files[j].link;
+        data.SD.height = video_files[j].height;
+      }
+    }
+  }
 
   function sortVideos() {
     let videoLink = [];
@@ -31,23 +49,11 @@ const VideoList = ({videos, setPage}) => {
         HD: {link: '', height: 0},
         SD: {link: '', height: 0},
       };
-      for (let j = 0; j < videos[i].video_files.length; j++) {
-        if (videos[i].video_files[j].height === 1080) {
-          data.FHD.link = videos[i].video_files[j].link;
-          data.FHD.height = 1080;
-        } else if (videos[i].video_files[j].height === 720) {
-          data.HD.link = videos[i].video_files[j].link;
-          data.HD.height = 720;
-        } else if (
-          videos[i].video_files[j].height <= 720 &&
-          videos[i].video_files[j].height > data.SD.height
-        ) {
-          data.SD.link = videos[i].video_files[j].link;
-          data.SD.height = videos[i].video_files[j].height;
-        }
-      }
+      searchVideo(videos[i].video_files, data);
       videoLink.push(data);
     }
+
+    APIController.logger(videoLink[0]);
     return videoLink;
   }
 
@@ -55,11 +61,12 @@ const VideoList = ({videos, setPage}) => {
     <FlatList
       data={videos}
       keyExtractor={(item, index) => index}
+      contentContainerStyle={style.listGrow}
       numColumns={3}
       ListEmptyComponent={() => {
         if (videoRdx.loading) {
           return (
-            <View style={style.activityContainer}>
+            <View style={{...style.activityContainer, ...styleList}}>
               <ActivityIndicator style={style.activityIndicator} />
             </View>
           );
@@ -100,10 +107,16 @@ const VideoList = ({videos, setPage}) => {
           <Pressable
             onPress={() => {
               let video = sortVideos();
-              APIController.logger(video[index]);
-              APIController.logger(video[index][settings.videoQuality.quality]);
+              let link = video[index][settings.videoQuality.quality].link;
+              if (link === '') {
+                link = video[index].HD.link;
+              }
+              if (link === '') {
+                link = video[index].SD.link;
+              }
+              APIController.logger(link);
               navigate('videoScreen', {
-                video: video[index][settings.videoQuality.quality].link,
+                video: link,
                 id: item.id,
                 thumbnail: item.video_pictures[0].picture,
               });
@@ -127,13 +140,15 @@ const style = StyleSheet.create({
   listStyle: {
     flex: 1,
   },
+  listGrow: {
+    flexGrow: 1,
+  },
   activityIndicator: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   activityContainer: {
     flex: 1,
-    height: 600,
     alignItems: 'center',
     justifyContent: 'center',
   },

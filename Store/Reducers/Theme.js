@@ -58,8 +58,10 @@ const ThemeReducer = createSlice({
       .addCase(getTheme.fulfilled, (state, action) => {
         state.loading = false;
         state.status = 'success';
-        state.selectedTheme = action.payload;
-        state.themeData = getThemeData(action.payload.theme);
+        if (action.payload.length !== 0) {
+          state.selectedTheme = action.payload;
+          state.themeData = getThemeData(action.payload.theme);
+        }
       })
       .addCase(getTheme.rejected, (state, action) => {
         state.loading = false;

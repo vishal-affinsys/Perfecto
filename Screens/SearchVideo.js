@@ -3,6 +3,7 @@ import {TextInput, View, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import VideoList from '../components/VideoList';
 import {useDispatch, useSelector} from 'react-redux';
+import theme from '../helpers/Theme';
 import {clearVideoSearch, getSearchedVideos} from '../Store/Reducers';
 
 const SearchVideo = () => {
@@ -25,16 +26,19 @@ const SearchVideo = () => {
   }, [dispatch, searchText, page]);
 
   return (
-    <View style={Theme.body}>
+    <View style={theme.body}>
       <TextInput
         placeholder="search"
-        style={{...style.inputStyle, color: Theme.fonts.h6.color}}
+        style={{
+          ...style.inputStyle,
+          color: Theme.fonts.h6.color,
+          borderColor: Theme.colors.border,
+        }}
         defaultValue={''}
         maxLength={30}
         returnKeyType="search"
         placeholderTextColor={Theme.fonts.h6.color}
         onChangeText={value => {
-          //   console.log(value);
           setOnChangeText(value);
           if (value.length === 0) {
             setSearchText(null);
@@ -46,7 +50,11 @@ const SearchVideo = () => {
           setSearchText(onChangeText);
         }}
       />
-      <VideoList videos={videoRdx.searchedVideos} setPage={setPage} />
+      <VideoList
+        videos={videoRdx.searchedVideos}
+        setPage={setPage}
+        styleList={style.videoList}
+      />
     </View>
   );
 };
@@ -55,9 +63,12 @@ const style = StyleSheet.create({
   inputStyle: {
     borderWidth: 0.5,
     margin: 8,
-    borderRadius: 20,
+    borderRadius: 12,
     paddingLeft: 12,
-    color: 'white',
+  },
+  videoList: {
+    flex: 1,
+    // height: 200,
   },
 });
 

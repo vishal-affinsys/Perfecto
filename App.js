@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {NavigationContainer, useTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -12,6 +12,7 @@ import {
   ExploreScreen,
   FavoriteScreen,
   HomeScreen,
+  LogScreen,
   PreviewScreen,
   SearchScreen,
   SearchVideo,
@@ -19,8 +20,6 @@ import {
   WallpaperView,
 } from './Screens';
 import {CustomDarkTheme, CustomLightTheme} from './helpers/ThemeData';
-import {getTheme} from './Store/Reducers';
-import {useDispatch} from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,7 +32,7 @@ const TabScreen = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveBackgroundColor: Theme.colors.card,
+        tabBarActiveBackgroundColor: 'transparent',
         tabBarInactiveBackgroundColor: Theme.colors.background,
         tabBarLabelStyle: {color: 'white'},
         tabBarAllowFontScaling: true,
@@ -136,6 +135,11 @@ const ReduxApp = () => {
           <Stack.Screen
             name="searchVideo"
             component={SearchVideo}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="logScreen"
+            component={LogScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
