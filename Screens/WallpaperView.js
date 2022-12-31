@@ -11,7 +11,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import theme from '../helpers/Theme';
 import RNFetchBlob from 'rn-fetch-blob';
 import {PermissionsAndroid} from 'react-native';
-import APIController from '../API/APIControllers';
+import {BaseAPIHandler} from '../API/APIControllers';
 import SetWallpaperModule from '../helpers/SetWallpaper';
 import {Picker} from '@react-native-picker/picker';
 import Icon from '../components/Icon';
@@ -44,17 +44,17 @@ const WallpaperView = ({route}) => {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        APIController.logger('Storage Permission Granted.');
+        BaseAPIHandler.logger('Storage Permission Granted.');
       } else {
       }
     } catch (err) {
-      APIController.logger(err);
+      BaseAPIHandler.logger(err);
     }
-    APIController.logger(original[index].url);
+    BaseAPIHandler.logger(original[index].url);
     const {config, fs} = RNFetchBlob;
     let PictureDir = fs.dirs.PictureDir;
 
-    APIController.logger(PictureDir);
+    BaseAPIHandler.logger(PictureDir);
 
     let options = {
       fileCache: true,
@@ -71,18 +71,20 @@ const WallpaperView = ({route}) => {
       },
     };
 
-    APIController.logger('Downloading options: ' + JSON.stringify(options));
-    APIController.logger('Downloading image: ' + settings.imageQuality.quality);
-    APIController.logger(
+    BaseAPIHandler.logger('Downloading options: ' + JSON.stringify(options));
+    BaseAPIHandler.logger(
+      'Downloading image: ' + settings.imageQuality.quality,
+    );
+    BaseAPIHandler.logger(
       'Download image SRC: ' + JSON.stringify(src[index].src),
     );
-    APIController.logger('Downloading Image on Index:' + index);
+    BaseAPIHandler.logger('Downloading Image on Index:' + index);
 
     config(options)
       .fetch('GET', src[index].src[settings.imageQuality.quality])
       .then(res => {
         //Showing alert after successful downloading
-        APIController.logger('res -> ' + JSON.stringify(res));
+        BaseAPIHandler.logger('res -> ' + JSON.stringify(res));
       });
   }
 
@@ -99,7 +101,7 @@ const WallpaperView = ({route}) => {
       );
     } else if (itemValue === 'set') {
       await SetWallpaperModule.setWallpaper(original[index].url, (res, msg) => {
-        APIController.logger(res + ' ' + msg);
+        BaseAPIHandler.logger(res + ' ' + msg);
       });
       ToastAndroid.showWithGravityAndOffset(
         'Setting Wallpaper',
@@ -109,7 +111,7 @@ const WallpaperView = ({route}) => {
         50,
       );
     } else if (itemValue === 'preview') {
-      APIController.logger(
+      BaseAPIHandler.logger(
         itemIndex + ' ' + itemValue + ' ' + original[index].url,
       );
 
@@ -160,7 +162,7 @@ const WallpaperView = ({route}) => {
               selectedValue={selectedValue}
               style={style.picker}
               onValueChange={async (itemValue, itemIndex) => {
-                APIController.logger(itemValue);
+                BaseAPIHandler.logger(itemValue);
                 await threeDotsFunctions(itemValue, itemIndex);
               }}
               mode="dropdown">

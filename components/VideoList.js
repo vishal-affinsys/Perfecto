@@ -12,7 +12,7 @@ import {
 import {useNavigation, useTheme} from '@react-navigation/native';
 import fontStyle from '../helpers/Font';
 import {useSelector} from 'react-redux';
-import APIController from '../API/APIControllers';
+import {BaseAPIHandler} from '../API/APIControllers';
 
 const VideoList = ({videos, setPage, styleList}) => {
   const {navigate} = useNavigation();
@@ -53,7 +53,7 @@ const VideoList = ({videos, setPage, styleList}) => {
       videoLink.push(data);
     }
 
-    APIController.logger(videoLink[0]);
+    BaseAPIHandler.logger(videoLink[0]);
     return videoLink;
   }
 
@@ -114,7 +114,7 @@ const VideoList = ({videos, setPage, styleList}) => {
               if (link === '') {
                 link = video[index].SD.link;
               }
-              APIController.logger(link);
+              BaseAPIHandler.logger(link);
               navigate('videoScreen', {
                 video: link,
                 id: item.id,
@@ -174,6 +174,7 @@ const style = StyleSheet.create({
     height: 200,
     margin: 2,
     borderRadius: 12,
+    backgroundColor: 'white',
     // width: '100%',
   },
   loadContainer: {

@@ -14,6 +14,7 @@ const Icon = {
     download: require('../assets/images/download-dark.png'),
     dropDown: require('../assets/images/drop-down-dark.png'),
     theme: require('../assets/images/theme-dark.png'),
+    scroll: require('../assets/images/scroll-dark.png'),
   },
 
   light: {
@@ -25,6 +26,7 @@ const Icon = {
     videoQuality: require('../assets/images/videoQuality.png'),
     dropDown: require('../assets/images/drop-down.png'),
     theme: require('../assets/images/theme.png'),
+    scroll: require('../assets/images/scroll.png'),
   },
 };
 export default Icon;

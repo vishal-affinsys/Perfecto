@@ -1,5 +1,5 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import APIController, {Endpoints} from '../../API/APIControllers';
+import {Endpoints, BaseAPIHandler} from '../../API/APIControllers';
 import * as Actions from '../Actions';
 
 const initialState = {
@@ -13,7 +13,7 @@ const initialState = {
 export const getVideos = createAsyncThunk(
   Actions.GET_POPULAR_VIDEOS,
   async page => {
-    const res = await APIController.getData(Endpoints.popularVideo(page));
+    const res = await BaseAPIHandler.getData(Endpoints.popularVideo(page));
     return res;
   },
 );
@@ -21,7 +21,9 @@ export const getVideos = createAsyncThunk(
 export const getSearchedVideos = createAsyncThunk(
   Actions.GET_SEARCH_VIDEO,
   async ({page, query}) => {
-    const res = await APIController.getData(Endpoints.searchVideo(page, query));
+    const res = await BaseAPIHandler.getData(
+      Endpoints.searchVideo(page, query),
+    );
     return res;
   },
 );
@@ -47,7 +49,7 @@ const videoSlice = createSlice({
 
         if (action.payload.error !== undefined) {
           state.status = 'failed';
-          state.error = 'Server error: ' + action.payload.error;
+          state.error = 'Server error: ' + action.payload.message;
           state.popularVideos = [];
         }
       })
@@ -61,17 +63,21 @@ const videoSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(getSearchedVideos.fulfilled, (state, action) => {
-        APIController.logger(action.payload);
         state.loading = false;
         state.status = 'success';
         state.searchedVideos = state.searchedVideos.concat(
           action.payload.videos,
         );
+        if (action.payload.error) {
+          state.status = 'failed';
+          state.error = action.payload.message;
+          state.searchedVideos = [];
+        }
       })
       .addCase(getSearchedVideos.rejected, (state, action) => {
         state.loading = false;
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload.message;
       });
   },
 });

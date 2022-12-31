@@ -12,7 +12,6 @@ import {
   ExploreScreen,
   FavoriteScreen,
   HomeScreen,
-  LogScreen,
   PreviewScreen,
   SearchScreen,
   SearchVideo,
@@ -135,11 +134,6 @@ const ReduxApp = () => {
           <Stack.Screen
             name="searchVideo"
             component={SearchVideo}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="logScreen"
-            component={LogScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

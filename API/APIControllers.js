@@ -1,4 +1,108 @@
-import {createLogs} from '../helpers/Quality';
+const Method = {
+  GET: 'GET',
+  POST: 'POST',
+  PUT: 'PUT',
+  DELETE: 'DELETE',
+};
+
+class AuthenticationBuilder {
+  constructor(token = null) {
+    this.headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: token,
+    };
+  }
+}
+
+class BodyBuilder extends AuthenticationBuilder {
+  constructor(body = null, token = null) {
+    super(token);
+    this.options = {
+      headers: this.headers,
+      body: body !== null ? JSON.stringify(body) : null,
+    };
+  }
+}
+
+class MethodBuilder extends BodyBuilder {
+  constructor(body = null, token = null, method) {
+    super(body, token);
+    this.options = {...this.options, method: method};
+  }
+}
+
+class BuildOptions extends MethodBuilder {
+  constructor(body = null, token = null, method) {
+    super(body, token, method);
+    this.options = this.options;
+  }
+}
+
+class RequestBuilder extends BuildOptions {
+  constructor({url, method, token = null, body = null}) {
+    super(body, token, method);
+    this.request = {
+      url: url,
+      options: this.options,
+    };
+  }
+  async sendRequest() {
+    const promise = await new Promise(async (resolve, reject) => {
+      return fetch(this.request.url, this.options)
+        .then(res =>
+          res
+            .json()
+            .then(data => resolve({res, data, message: 'success'}))
+            .catch(e => {
+              resolve({res, data: null, message: `failed: ${e}`});
+            }),
+        )
+        .catch(e => {
+          resolve({res: {status: null}, data: null, message: `failed: ${e}`});
+        });
+    });
+    return new ResponseBuilder({
+      request: this.request,
+      response: {
+        body: promise.res,
+        data: promise.data,
+      },
+      status: {
+        error: promise.res.status !== 200,
+        message: promise.message,
+        code: promise.res.status,
+      },
+    });
+  }
+  showRequest() {
+    console.log('\n\n---------------------REQUEST----------------------------');
+    console.log(JSON.stringify(this.request, null, 2));
+    console.log('---------------------REQUEST-END------------------------\n\n');
+  }
+}
+
+class ResponseBuilder {
+  constructor({request, response, status}) {
+    this.request = {
+      url: request.url,
+      options: request.options,
+    };
+    this.response = {body: response.body, data: response.data};
+    this.status = {
+      error: status.error,
+      message: status.message,
+      code: status.code,
+    };
+  }
+  showResponse() {
+    console.log('\n\n---------------------RESPONSE--------------------------');
+    console.log(JSON.stringify(this.response, null, 2));
+    console.log('---------------------RESPONSE-END----------------------\n\n');
+  }
+}
+
+export {RequestBuilder, ResponseBuilder};
 
 export const Endpoints = {
   paginatedData: page =>
@@ -13,103 +117,24 @@ export const Endpoints = {
   mockAPIimages: 'https://mocki.io/v1/ba33d6ed-8c3a-4c4b-b448-01610807d392',
 };
 
-class APIController {
-  static options = {
-    method: 'GET',
-    headers: {
-      Authorization: '563492ad6f91700001000001cb72da354d3247fabf6d0d7b8b2e9bf7',
-    },
-  };
-
-  static async getData(url) {
-    const promise = await new Promise((resolve, reject) =>
-      fetch(url, this.options)
-        .then(res =>
-          res.json().then(data => {
-            this.logger(
-              'options: ' +
-                JSON.stringify(this.options, null, 2) +
-                '\n\n' +
-                'URL: ' +
-                url +
-                '\n\n' +
-                'data: ' +
-                JSON.stringify(data, null, 2),
-            );
-            resolve(data);
-          }),
-        )
-        .catch(error => {
-          this.logger(error);
-          reject(`Something went wrong\n ${error}`);
-        }),
-    );
-    return promise;
-  }
-
-  static async getToken(url) {
-    const options = {
-      method: 'POST',
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0',
-        Accept: '*/*',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        Referer: 'https://kryptview.com/',
-        'content-type': 'application/json',
-        Origin: 'https://kryptview.com',
-        Connection: 'keep-alive',
-        Cookie:
-          '__cf_bm=bGQEBrOZhgciPrKewSNqh0tv3ZESYS6T5fXYzCXEcrc-1670047674-0-Ac+kWpmLHc32iJlH95lDtwPlYpCQGLuohl5r9tH6zOPLU7XqHRE8I6lMN9LrZ8mS/WwlZZYB3m4KvvquJbJgoF8zYlX5NCcj2xNT+PW/bGQ6rnHZvezq7eKVpI1e1Q76IkmiHlEYYqX4f3LSjId0X/k=',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'same-site',
-        TE: 'trailers',
-      },
-      body: JSON.stringify({
-        operationName: 'GetAllTokensDetails',
-        variables: {
-          page: 1,
-          pageSize: 20,
-          filter: 'avg-rating-desc',
-        },
-        query:
-          'query GetAllTokensDetails($page: Int!, $pageSize: Int!, $filter: String) {\n  getAllTokensDetails(page: $page, pageSize: $pageSize, filter: $filter) {\n    success\n    message\n    count\n    tokens {\n      identity {\n        id\n        name\n        symbol\n        reference\n        coinGeckoImage\n        validatedResearchCount\n        currentTokenRating {\n          rating {\n            name\n            type\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      market {\n        image\n        price\n        h24\n        d7\n        marketCap\n        volume\n        circulatingSupply\n        sparkline\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n',
-      }),
-    };
-
-    const promise = await new Promise((resolve, reject) =>
-      fetch('https://api.kryptview.com/v1/graphql', options)
-        .then(res =>
-          res.json().then(data => {
-            console.log(data);
-            resolve(data);
-          }),
-        )
-        .catch(error => {
-          reject(`Something went wrong\n ${error}`);
-        }),
-    );
-    return promise;
-  }
-
-  static async getDataUsingPromise(url) {
-    return new Promise((resolve, reject) => {
-      this.getData(url)
-        .then(response => {
-          resolve(response);
-          this.logger(url + 'called\n' + JSON.stringify(response));
-        })
-        .catch(error => {
-          reject(error);
-        });
+export const BaseAPIHandler = {
+  request: async function (url) {
+    const res = new RequestBuilder({
+      method: Method.GET,
+      url: url,
+      token: '563492ad6f91700001000001cb72da354d3247fabf6d0d7b8b2e9bf7',
     });
-  }
-
-  static logger(message) {
-    createLogs(message);
-  }
-}
-
-export default APIController;
+    const data = await res.sendRequest();
+    console.log(data.status);
+    return data.response.data ?? data.status;
+  },
+  getData: async function (url) {
+    const promise = await BaseAPIHandler.request(url);
+    return promise;
+  },
+  logger: function (message) {
+    console.log('------------------Logger--------------------');
+    console.log(message);
+    console.log('------------------Logger-end--------------------');
+  },
+};

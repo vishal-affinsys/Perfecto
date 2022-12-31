@@ -13,7 +13,7 @@ import Orientation from 'react-native-orientation-locker';
 import {Picker} from '@react-native-picker/picker';
 import Icon from '../components/Icon';
 import RNFetchBlob from 'rn-fetch-blob';
-import APIController from '../API/APIControllers';
+import {BaseAPIHandler} from '../API/APIControllers';
 import {useDispatch, useSelector} from 'react-redux';
 import {removeVideoFromLocal, saveVideosToLocal} from '../Store/Reducers';
 import {useTheme} from '@react-navigation/native';
@@ -50,17 +50,17 @@ const VideoScreen = ({route}) => {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        APIController.logger('Storage Permission Granted.');
+        BaseAPIHandler.logger('Storage Permission Granted.');
       } else {
       }
     } catch (err) {
-      APIController.logger(err);
+      BaseAPIHandler.logger(err);
     }
-    APIController.logger('VIDEO:' + JSON.stringify(video));
+    BaseAPIHandler.logger('VIDEO:' + JSON.stringify(video));
     const {config, fs} = RNFetchBlob;
     let PictureDir = fs.dirs.PictureDir;
 
-    APIController.logger('Picture_dir:' + PictureDir);
+    BaseAPIHandler.logger('Picture_dir:' + PictureDir);
 
     let options = {
       fileCache: true,
@@ -77,13 +77,13 @@ const VideoScreen = ({route}) => {
       },
     };
 
-    APIController.logger('Download Options:' + JSON.stringify(options));
+    BaseAPIHandler.logger('Download Options:' + JSON.stringify(options));
 
     config(options)
       .fetch('GET', video)
       .then(res => {
         //Showing alert after successful downloading
-        APIController.logger('res -> ' + JSON.stringify(res));
+        BaseAPIHandler.logger('res -> ' + JSON.stringify(res));
       });
   }
 
@@ -99,7 +99,7 @@ const VideoScreen = ({route}) => {
       );
     } else if (func === 'resize') {
       setSelectedSize(previous => (previous + 1) % 4);
-      APIController.logger('Selected Size:' + JSON.stringify(selectedSize));
+      BaseAPIHandler.logger('Selected Size:' + JSON.stringify(selectedSize));
       ToastAndroid.showWithGravityAndOffset(
         mode[selectedSize],
         0.2,
@@ -157,10 +157,10 @@ const VideoScreen = ({route}) => {
         resizeMode={mode[selectedSize]}
         volume={10}
         onLoad={data => {
-          APIController.logger('On load data->' + JSON.stringify(data));
+          BaseAPIHandler.logger('On load data->' + JSON.stringify(data));
         }}
         onBuffer={data => {
-          APIController.logger('On Buffer data->' + JSON.stringify(data));
+          BaseAPIHandler.logger('On Buffer data->' + JSON.stringify(data));
         }}
       />
       <View style={style.optionsContainer}>

@@ -8,7 +8,7 @@ const Theme = StyleSheet.create({
     marginLeft: 8,
   },
   body: {
-    padding: 4,
+    // padding: 4,
     flex: 1,
   },
 });

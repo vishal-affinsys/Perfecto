@@ -13,7 +13,6 @@ import theme from '../helpers/Theme';
 import {useDispatch, useSelector} from 'react-redux';
 import {getPhotosFromLocal, getVideosFromLocal} from '../Store/Reducers';
 import {useNavigation, useTheme} from '@react-navigation/native';
-import APIController from '../API/APIControllers';
 
 const FavoriteScreen = () => {
   const navigation = useNavigation();
@@ -63,6 +62,7 @@ const FavoriteScreen = () => {
               );
             }}
             renderItem={({item, index}) => {
+              console.log(item);
               return (
                 <Pressable
                   onPress={() => {
@@ -80,7 +80,6 @@ const FavoriteScreen = () => {
                         id: images[i].id,
                       });
                       src.push(images[i].srcArray);
-                      APIController.logger(src);
                     }
                     let params = {
                       original: original,

@@ -1,5 +1,4 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import APIController from '../../API/APIControllers';
 import LocalStorage, {Operations} from '../../API/LocalStorage';
 import * as Actions from '../Actions';
 
@@ -31,7 +30,7 @@ export const removeImageFromLocal = createAsyncThunk(
   Actions.REMOVE_PHOTO_FROM_LOCAL,
   async itemId => {
     const res = await LocalStorage.removeData(Operations.photo, itemId);
-    APIController.logger(res);
+
     return res;
   },
 );
@@ -48,7 +47,7 @@ export const getVideosFromLocal = createAsyncThunk(
   Actions.GET_VIDEOS_FROM_LOCAL,
   async options => {
     const res = await LocalStorage.getDatafromLocal(Operations.video);
-    APIController.logger(res);
+
     return res;
   },
 );
